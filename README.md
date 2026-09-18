@@ -73,11 +73,7 @@ This project demonstrates the implementation of an online bookstore using Java, 
 7. Deploy the application on Tomcat.
 8. Open the application in your browser.
 
-## Demo
 
-A step-by-step local setup guide is available on YouTube:
-
-https://youtu.be/mLFPodZO8Iw
 
 ## License
 
