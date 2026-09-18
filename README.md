@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # <a href="https://youtu.be/mLFPodZO8Iw" target="_blank"> OnlineBookStore </a> 
 - A Java Web Developement Project
 - **Youtube VIDEO** for step by step Local Setup Guide : https://youtu.be/mLFPodZO8Iw
@@ -141,3 +142,6 @@ Note:- Considering this as a Sample Project, we have not much considered of web 
 <bold>Thanks a lot,</bold><br/>
                                                                                                         Project Leader<br/>
                                                                                                          <b>Shashi Raj</b>
+=======
+# OnlineBookStore
+>>>>>>> ce40bad456536140564f90491416818005433b8f
