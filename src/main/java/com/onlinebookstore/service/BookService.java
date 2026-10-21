@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.onlinebookstore.exception.BookNotFoundException;
 import com.onlinebookstore.exception.OutOfStockException;
 import com.onlinebookstore.model.Book;
+import com.onlinebookstore.model.CartLine;
 import com.onlinebookstore.repository.BookRepository;
 
 @Service
@@ -24,6 +25,15 @@ public class BookService {
     @Transactional(readOnly = true)
     public List<Book> findAll() {
         return bookRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Book> search(String query) {
+        if (query == null || query.isBlank()) {
+            return bookRepository.findAll();
+        }
+        String trimmed = query.trim();
+        return bookRepository.findByNameContainingIgnoreCaseOrAuthorContainingIgnoreCase(trimmed, trimmed);
     }
 
     @Transactional(readOnly = true)
@@ -50,6 +60,17 @@ public class BookService {
     @Transactional
     public void delete(String barcode) {
         bookRepository.delete(findByBarcode(barcode));
+    }
+
+    /**
+     * Decrease stock for one cart line atomically; throws OutOfStockException when
+     * the available quantity is not sufficient.
+     */
+    @Transactional
+    public void purchaseLine(CartLine line) {
+        if (bookRepository.decrementStock(line.getBarcode(), line.getQuantity()) == 0) {
+            throw new OutOfStockException(line.getBarcode());
+        }
     }
 
     /**

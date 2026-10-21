@@ -3,15 +3,32 @@ package com.onlinebookstore.dto;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Receipt implements Serializable {
 
+    private Long orderId;
     private List<ReceiptLine> lines;
     private BigDecimal total;
     private LocalDateTime placedAt;
 
+    public Long getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
+    }
+
     public List<ReceiptLine> getLines() {
+        return lines;
+    }
+
+    public List<ReceiptLine> getOrInitLines() {
+        if (lines == null) {
+            lines = new ArrayList<>();
+        }
         return lines;
     }
 

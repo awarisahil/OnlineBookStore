@@ -31,6 +31,7 @@
             <ul class="navbar-nav me-auto">
                 <li class="nav-item"><a class="nav-link" th:href="@{/books}">Books</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/cart}">Cart</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/orders}">My Orders</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/about}">About</a></li>
             </ul>
             <span class="navbar-text me-3" sec:authentication="name">user</span>
@@ -51,6 +52,7 @@
             <ul class="navbar-nav me-auto">
                 <li class="nav-item"><a class="nav-link" th:href="@{/admin/books}">Inventory</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/admin/books/new}">Add Book</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/admin/orders}">Sales History</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/about}">About</a></li>
             </ul>
             <span class="navbar-text me-3" sec:authentication="name">seller</span>

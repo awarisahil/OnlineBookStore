@@ -1,0 +1,11 @@
+# Test profile: fast in-memory H2. The PostgresSmokeTest class overrides the
+# datasource with an embedded PostgreSQL for migration verification.
+# Note: no DB_CLOSE_DELAY — the in-memory database disappears when the Spring
+# context (and its connection pool) is closed, so @DirtiesContext gives each
+# test class a fresh, re-seeded database.
+spring:
+  datasource:
+    url: jdbc:h2:mem:bookstore-test
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:

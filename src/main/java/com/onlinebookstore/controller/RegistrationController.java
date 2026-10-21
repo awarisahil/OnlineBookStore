@@ -8,7 +8,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.onlinebookstore.dto.RegistrationForm;
 import com.onlinebookstore.exception.DuplicateEmailException;
@@ -32,13 +31,11 @@ public class RegistrationController {
     }
 
     @PostMapping("/register")
-    public String register(@Valid @ModelAttribute("form") RegistrationForm form, BindingResult bindingResult,
-            RedirectAttributes redirectAttributes) {
+    public String register(@Valid @ModelAttribute("form") RegistrationForm form, BindingResult bindingResult) {
         if (!bindingResult.hasErrors()) {
             try {
                 userService.register(form);
-                redirectAttributes.addFlashAttribute("registered", true);
-                return "redirect:/login";
+                return "redirect:/login?registered";
             } catch (DuplicateEmailException ex) {
                 bindingResult.rejectValue("email", "duplicate", ex.getMessage());
             }

@@ -33,7 +33,9 @@
     </table>
 
     <p class="text-muted">
-        Placed on <span th:text="${#temporals.format(receipt.placedAt, 'dd MMM yyyy, HH:mm')}">date</span>.
+        Order #<span th:text="${receipt.orderId}">1</span> ·
+        placed on <span th:text="${#temporals.format(receipt.placedAt, 'dd MMM yyyy, HH:mm')}">date</span> ·
+        <a th:href="@{/orders/{id}(id=${receipt.orderId})}">view this order</a>
     </p>
 
     <a th:href="@{/books}" class="btn btn-primary">Continue shopping</a>

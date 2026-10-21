@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.onlinebookstore.service.BookService;
 
@@ -18,8 +19,9 @@ public class BookController {
     }
 
     @GetMapping
-    public String list(Model model) {
-        model.addAttribute("books", bookService.findAll());
+    public String list(@RequestParam(name = "q", required = false) String query, Model model) {
+        model.addAttribute("books", bookService.search(query));
+        model.addAttribute("q", query == null ? "" : query);
         return "books";
     }
 }

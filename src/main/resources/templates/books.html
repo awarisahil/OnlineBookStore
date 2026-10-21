@@ -7,6 +7,13 @@
 <main class="container">
     <h1 class="mb-4">Available Books</h1>
 
+    <form th:action="@{/books}" method="get" class="d-flex mb-4" role="search">
+        <input type="search" name="q" class="form-control me-2" placeholder="Search by title or author"
+               th:value="${q}">
+        <button type="submit" class="btn btn-outline-primary">Search</button>
+        <a th:if="${q != null and !#strings.isEmpty(q)}" class="btn btn-link" th:href="@{/books}">Clear</a>
+    </form>
+
     <div th:replace="~{fragments :: alerts}"></div>
 
     <p th:if="${#lists.isEmpty(books)}" class="text-muted">No books available right now — please check back later.</p>

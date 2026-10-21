@@ -24,7 +24,8 @@ public class SecurityConfig {
                         .requestMatchers("/", "/about", "/login", "/register", "/error/**", "/css/**", "/webjars/**")
                         .permitAll()
                         .requestMatchers("/admin/**").hasRole("SELLER")
-                        .requestMatchers("/books", "/cart/**", "/checkout", "/pay", "/receipt").hasRole("CUSTOMER")
+                        .requestMatchers("/books", "/cart/**", "/checkout", "/pay", "/receipt", "/orders/**")
+                        .hasRole("CUSTOMER")
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login")

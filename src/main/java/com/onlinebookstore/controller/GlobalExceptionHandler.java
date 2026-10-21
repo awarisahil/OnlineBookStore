@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.ui.Model;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -19,6 +20,15 @@ import com.onlinebookstore.exception.OutOfStockException;
 public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+    /**
+     * Access-denied situations must reach Spring Security's exception translation
+     * (which renders /error/403), not the generic error page.
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    public void rethrowAccessDenied(AccessDeniedException ex) {
+        throw ex;
+    }
 
     @ExceptionHandler(NoResourceFoundException.class)
     public ModelAndView notFound(NoResourceFoundException ex, HttpServletResponse response) {

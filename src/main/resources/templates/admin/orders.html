@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Sales history')}"></head>
+<body>
+<nav th:replace="~{fragments :: seller-nav}"></nav>
+
+<main class="container">
+    <h1 class="mb-4">Sales History</h1>
+
+    <div th:if="${#lists.isEmpty(orders)}" class="alert alert-info">No orders have been placed yet.</div>
+
+    <table class="table" th:unless="${#lists.isEmpty(orders)}">
+        <thead>
+        <tr>
+            <th>Order #</th>
+            <th>Customer</th>
+            <th>Placed</th>
+            <th class="text-end">Total</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="order : ${orders}">
+            <td th:text="${order.id}">1</td>
+            <td th:text="${order.customer.email}">customer@example.com</td>
+            <td th:text="${#temporals.format(order.placedAt, 'dd MMM yyyy, HH:mm')}">date</td>
+            <td class="text-end" th:text="|₹ ${order.total}|">₹ 0.00</td>
+            <td class="text-end">
+                <a class="btn btn-outline-primary btn-sm" th:href="@{/admin/orders/{id}(id=${order.id})}">View</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>
