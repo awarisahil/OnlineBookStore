@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: onlinebookstore
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/onlinebookstore}
+    username: ${DB_USER:bookstore}
+    password: ${DB_PASSWORD:bookstore}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    enabled: true
+
+server:
+  port: ${PORT:8080}

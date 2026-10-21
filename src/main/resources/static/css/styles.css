@@ -1,0 +1,22 @@
+body {
+    background: #f6f4ef;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.hero {
+    padding: 4rem 1rem;
+}
+
+.form-narrow {
+    max-width: 480px;
+    margin: 0 auto;
+}

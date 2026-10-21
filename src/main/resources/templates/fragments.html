@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="|${title} · OnlineBookStore|">OnlineBookStore</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}" defer></script>
+</head>
+
+<nav th:fragment="public-nav" class="navbar navbar-dark bg-dark mb-4">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">OnlineBookStore</a>
+        <div>
+            <a class="btn btn-outline-light btn-sm" th:href="@{/login}">Log in</a>
+            <a class="btn btn-light btn-sm ms-2" th:href="@{/register}">Register</a>
+        </div>
+    </div>
+</nav>
+
+<nav th:fragment="customer-nav" class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/books}">OnlineBookStore</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#customerNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="customerNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/books}">Books</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/cart}">Cart</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/about}">About</a></li>
+            </ul>
+            <span class="navbar-text me-3" sec:authentication="name">user</span>
+            <form th:action="@{/logout}" method="post">
+                <button class="btn btn-outline-light btn-sm" type="submit">Log out</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<nav th:fragment="seller-nav" class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/admin/books}">OnlineBookStore · Admin</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sellerNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="sellerNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/admin/books}">Inventory</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/admin/books/new}">Add Book</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/about}">About</a></li>
+            </ul>
+            <span class="navbar-text me-3" sec:authentication="name">seller</span>
+            <form th:action="@{/logout}" method="post">
+                <button class="btn btn-outline-light btn-sm" type="submit">Log out</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<th:block th:fragment="stock-badge(quantity)">
+    <span th:if="${quantity == 0}" class="badge text-bg-secondary">Out of Stock</span>
+    <span th:if="${quantity > 0 and quantity < 20}" class="badge text-bg-warning text-dark"
+          th:text="|Only ${quantity} left|">Only N left</span>
+    <span th:if="${quantity >= 20}" class="badge text-bg-success">Trending</span>
+</th:block>
+
+<th:block th:fragment="alerts">
+    <div th:if="${successMessage != null}" class="alert alert-success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage != null}" class="alert alert-danger" th:text="${errorMessage}"></div>
+</th:block>
+
+</body>
+</html>

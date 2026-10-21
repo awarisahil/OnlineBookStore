@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Access denied')}"></head>
+<body>
+<nav th:replace="~{fragments :: public-nav}"></nav>
+
+<main class="container text-center py-5">
+    <h1 class="display-4">403</h1>
+    <p class="lead">You do not have access to this page.</p>
+    <a th:href="@{/}" class="btn btn-primary">Back to home</a>
+</main>
+</body>
+</html>

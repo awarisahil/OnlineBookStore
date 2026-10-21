@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('About')}"></head>
+<body>
+<nav th:replace="~{fragments :: public-nav}"></nav>
+
+<main class="container">
+    <h1 class="mb-4">About</h1>
+    <p>OnlineBookStore is a demo bookstore application. Customers can browse the catalog, add books
+        to a shopping cart, and place orders; sellers manage the catalog from the admin area.</p>
+    <p class="text-muted">Built with Spring Boot, Spring Security, Spring Data JPA, and Thymeleaf.</p>
+</main>
+</body>
+</html>

@@ -1,4 +1,25 @@
-/target/
-/build/
+# Build output
+target/
+build/
+*.jar
+*.war
+
+# IDEs
+.idea/
+*.iml
 .classpath
-.settings
+.project
+.settings/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs / runtime
+*.log
+data/
+
+# Env files
+.env

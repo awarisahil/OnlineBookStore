@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Welcome')}"></head>
+<body>
+<nav th:replace="~{fragments :: public-nav}"></nav>
+
+<main class="container">
+    <section class="hero text-center">
+        <h1 class="display-5">Welcome to OnlineBookStore</h1>
+        <p class="lead text-muted">Browse the catalog, fill your cart, and check out.</p>
+        <a th:href="@{/login}" class="btn btn-primary btn-lg">Log in</a>
+        <a th:href="@{/register}" class="btn btn-outline-primary btn-lg ms-2">Create account</a>
+    </section>
+
+    <div class="row g-4 text-center">
+        <div class="col-md-4">
+            <div class="card h-100"><div class="card-body">
+                <h5 class="card-title">Browse</h5>
+                <p class="card-text text-muted">Explore the book catalog with live stock information.</p>
+            </div></div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100"><div class="card-body">
+                <h5 class="card-title">Shop</h5>
+                <p class="card-text text-muted">Add books to your cart and place orders in seconds.</p>
+            </div></div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100"><div class="card-body">
+                <h5 class="card-title">Sell</h5>
+                <p class="card-text text-muted">Manage the catalog: add, update, and remove books.</p>
+            </div></div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

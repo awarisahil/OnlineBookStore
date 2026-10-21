@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Inventory')}"></head>
+<body>
+<nav th:replace="~{fragments :: seller-nav}"></nav>
+
+<main class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Book Inventory</h1>
+        <a th:href="@{/admin/books/new}" class="btn btn-primary">Add Book</a>
+    </div>
+
+    <div th:if="${param.created != null}" class="alert alert-success">Book added successfully.</div>
+    <div th:if="${param.updated != null}" class="alert alert-success">Book updated successfully.</div>
+    <div th:if="${param.deleted != null}" class="alert alert-success">Book removed successfully.</div>
+
+    <p th:if="${#lists.isEmpty(books)}" class="text-muted">No books in the store yet — add your first one.</p>
+
+    <table class="table table-striped align-middle" th:unless="${#lists.isEmpty(books)}">
+        <thead>
+        <tr>
+            <th>Barcode</th>
+            <th>Name</th>
+            <th>Author</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th class="text-end">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="book : ${books}">
+            <td class="text-muted small" th:text="${book.barcode}">barcode</td>
+            <td th:text="${book.name}">Name</td>
+            <td th:text="${book.author}">Author</td>
+            <td th:text="|₹ ${book.price}|">₹ 0.00</td>
+            <td><span th:replace="~{fragments :: stock-badge(${book.quantity})}"></span></td>
+            <td class="text-end">
+                <a class="btn btn-outline-primary btn-sm"
+                   th:href="@{/admin/books/{b}/edit(b=${book.barcode})}">Edit</a>
+                <form class="d-inline" th:action="@{/admin/books/{b}/delete(b=${book.barcode})}" method="post"
+                      onsubmit="return confirm('Remove this book from the store?');">
+                    <button type="submit" class="btn btn-outline-danger btn-sm">Remove</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

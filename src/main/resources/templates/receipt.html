@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Receipt')}"></head>
+<body>
+<nav th:replace="~{fragments :: customer-nav}"></nav>
+
+<main class="container">
+    <h1 class="mb-4">Order placed — thank you!</h1>
+
+    <div class="alert alert-success">Your order was placed successfully. Keep this receipt for your records.</div>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Book</th>
+            <th>Quantity</th>
+            <th class="text-end">Amount</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="line : ${receipt.lines}">
+            <td th:text="${line.name}">Book</td>
+            <td th:text="${line.quantity}">1</td>
+            <td class="text-end" th:text="|₹ ${line.amount}|">₹ 0.00</td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+            <th colspan="2" class="text-end">Total paid</th>
+            <th class="text-end" th:text="|₹ ${receipt.total}|">₹ 0.00</th>
+        </tr>
+        </tfoot>
+    </table>
+
+    <p class="text-muted">
+        Placed on <span th:text="${#temporals.format(receipt.placedAt, 'dd MMM yyyy, HH:mm')}">date</span>.
+    </p>
+
+    <a th:href="@{/books}" class="btn btn-primary">Continue shopping</a>
+</main>
+</body>
+</html>

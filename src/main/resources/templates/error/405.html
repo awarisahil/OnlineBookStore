@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Method not allowed')}"></head>
+<body>
+<nav th:replace="~{fragments :: public-nav}"></nav>
+
+<main class="container text-center py-5">
+    <h1 class="display-4">405</h1>
+    <p class="lead">This action does not support the <span th:text="${method}">GET</span> method.</p>
+    <a th:href="@{/}" class="btn btn-primary">Back to home</a>
+</main>
+</body>
+</html>

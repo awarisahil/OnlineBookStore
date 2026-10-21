@@ -1,0 +1,8 @@
+# Dev profile: run without Docker using an embedded H2 database (file-based).
+# Start with: mvn spring-boot:run -Dspring-boot.run.profiles=dev
+spring:
+  datasource:
+    url: jdbc:h2:file:./data/bookstore
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
