@@ -56,7 +56,7 @@ class CatalogSearchTest {
     void emptySearchResultShowsNote() throws Exception {
         mockMvc.perform(get("/books").param("q", "zzzznothing"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("No books available")));
+                .andExpect(content().string(containsString("No books match your search")));
     }
 
     @Test

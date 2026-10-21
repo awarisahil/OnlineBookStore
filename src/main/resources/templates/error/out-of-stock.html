@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments :: head('Out of stock')}"></head>
 <body>
-<nav th:replace="~{fragments :: customer-nav}"></nav>
+<nav th:replace="~{fragments :: site-nav}"></nav>
 
 <main class="container text-center py-5">
     <h1 class="mb-3">Not enough stock</h1>
@@ -10,5 +10,7 @@
     <p class="text-muted">Your cart was kept — adjust the quantities and try again.</p>
     <a th:href="@{/cart}" class="btn btn-primary">Back to cart</a>
 </main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
 </body>
 </html>

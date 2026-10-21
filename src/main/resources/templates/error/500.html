@@ -2,12 +2,14 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments :: head('Something went wrong')}"></head>
 <body>
-<nav th:replace="~{fragments :: public-nav}"></nav>
+<nav th:replace="~{fragments :: site-nav}"></nav>
 
 <main class="container text-center py-5">
     <h1 class="display-4">500</h1>
     <p class="lead">Something went wrong on our side. Please try again.</p>
     <a th:href="@{/}" class="btn btn-primary">Back to home</a>
 </main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
 </body>
 </html>

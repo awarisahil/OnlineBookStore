@@ -6,62 +6,105 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title th:text="|${title} · OnlineBookStore|">OnlineBookStore</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}" defer></script>
 </head>
 
-<nav th:fragment="public-nav" class="navbar navbar-dark bg-dark mb-4">
+<nav th:fragment="site-nav" class="navbar navbar-expand-lg navbar-dark site-nav mb-4">
     <div class="container">
-        <a class="navbar-brand" th:href="@{/}">OnlineBookStore</a>
+
+        <th:block sec:authorize="hasRole('SELLER')">
+            <nav th:replace="~{:: seller-inner}"></nav>
+        </th:block>
+
+        <th:block sec:authorize="isAuthenticated() and !hasRole('SELLER')">
+            <nav th:replace="~{:: customer-inner}"></nav>
+        </th:block>
+
+        <th:block sec:authorize="!isAuthenticated()">
+            <nav th:replace="~{:: public-inner}"></nav>
+        </th:block>
+
+    </div>
+</nav>
+
+<nav th:fragment="seller-inner" class="d-contents">
+    <a class="navbar-brand d-flex align-items-center gap-2" th:href="@{/admin/books}">
+        <svg class="brand-icon" width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M4 3.5A1.5 1.5 0 0 1 5.5 2H11v20H5.5A1.5 1.5 0 0 1 4 20.5v-17Z"/>
+            <path d="M20 3.5A1.5 1.5 0 0 0 18.5 2H13v20h5.5a1.5 1.5 0 0 0 1.5-1.5v-17Z" opacity=".6"/>
+        </svg>
+        <span class="brand-text">OnlineBookStore</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#siteNav">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="siteNav">
+        <ul class="navbar-nav me-auto">
+            <li class="nav-item"><a class="nav-link" th:href="@{/admin/books}">Inventory</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/admin/books/new}">Add Book</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/admin/orders}">Sales History</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/about}">About</a></li>
+        </ul>
+        <span class="navbar-text me-3 user-chip" sec:authentication="name">seller</span>
+        <form th:action="@{/logout}" method="post">
+            <button class="btn btn-outline-light btn-sm" type="submit">Log out</button>
+        </form>
+    </div>
+</nav>
+
+<nav th:fragment="customer-inner" class="d-contents">
+    <a class="navbar-brand d-flex align-items-center gap-2" th:href="@{/books}">
+        <svg class="brand-icon" width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M4 3.5A1.5 1.5 0 0 1 5.5 2H11v20H5.5A1.5 1.5 0 0 1 4 20.5v-17Z"/>
+            <path d="M20 3.5A1.5 1.5 0 0 0 18.5 2H13v20h5.5a1.5 1.5 0 0 0 1.5-1.5v-17Z" opacity=".6"/>
+        </svg>
+        <span class="brand-text">OnlineBookStore</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#siteNav">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="siteNav">
+        <ul class="navbar-nav me-auto">
+            <li class="nav-item"><a class="nav-link" th:href="@{/books}">Browse</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/cart}">Cart</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/orders}">My Orders</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/about}">About</a></li>
+        </ul>
+        <span class="navbar-text me-3 user-chip" sec:authentication="name">user</span>
+        <form th:action="@{/logout}" method="post">
+            <button class="btn btn-outline-light btn-sm" type="submit">Log out</button>
+        </form>
+    </div>
+</nav>
+
+<nav th:fragment="public-inner" class="d-contents d-flex w-100 align-items-center">
+    <a class="navbar-brand d-flex align-items-center gap-2" th:href="@{/}">
+        <svg class="brand-icon" width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M4 3.5A1.5 1.5 0 0 1 5.5 2H11v20H5.5A1.5 1.5 0 0 1 4 20.5v-17Z"/>
+            <path d="M20 3.5A1.5 1.5 0 0 0 18.5 2H13v20h5.5a1.5 1.5 0 0 0 1.5-1.5v-17Z" opacity=".6"/>
+        </svg>
+        <span class="brand-text">OnlineBookStore</span>
+    </a>
+    <div class="ms-auto d-flex gap-2">
+        <a class="btn btn-outline-light btn-sm" th:href="@{/login}">Log in</a>
+        <a class="btn btn-gold btn-sm" th:href="@{/register}">Register</a>
+    </div>
+</nav>
+
+<footer th:fragment="footer" class="site-footer mt-auto py-4">
+    <div class="container d-flex flex-wrap justify-content-between align-items-center gap-3">
         <div>
-            <a class="btn btn-outline-light btn-sm" th:href="@{/login}">Log in</a>
-            <a class="btn btn-light btn-sm ms-2" th:href="@{/register}">Register</a>
+            <span class="brand-text fs-5">OnlineBookStore</span>
+            <p class="small mb-0 opacity-75">A cozy little demo bookstore, built with Spring Boot.</p>
         </div>
+        <p class="small mb-0 opacity-75">Catalog, carts, and orders are all simulated locally.</p>
     </div>
-</nav>
-
-<nav th:fragment="customer-nav" class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-    <div class="container">
-        <a class="navbar-brand" th:href="@{/books}">OnlineBookStore</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#customerNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="customerNav">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item"><a class="nav-link" th:href="@{/books}">Books</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/cart}">Cart</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/orders}">My Orders</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/about}">About</a></li>
-            </ul>
-            <span class="navbar-text me-3" sec:authentication="name">user</span>
-            <form th:action="@{/logout}" method="post">
-                <button class="btn btn-outline-light btn-sm" type="submit">Log out</button>
-            </form>
-        </div>
-    </div>
-</nav>
-
-<nav th:fragment="seller-nav" class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-    <div class="container">
-        <a class="navbar-brand" th:href="@{/admin/books}">OnlineBookStore · Admin</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sellerNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="sellerNav">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item"><a class="nav-link" th:href="@{/admin/books}">Inventory</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/admin/books/new}">Add Book</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/admin/orders}">Sales History</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/about}">About</a></li>
-            </ul>
-            <span class="navbar-text me-3" sec:authentication="name">seller</span>
-            <form th:action="@{/logout}" method="post">
-                <button class="btn btn-outline-light btn-sm" type="submit">Log out</button>
-            </form>
-        </div>
-    </div>
-</nav>
+</footer>
 
 <th:block th:fragment="stock-badge(quantity)">
     <span th:if="${quantity == 0}" class="badge text-bg-secondary">Out of Stock</span>
@@ -74,6 +117,13 @@
     <div th:if="${successMessage != null}" class="alert alert-success" th:text="${successMessage}"></div>
     <div th:if="${errorMessage != null}" class="alert alert-danger" th:text="${errorMessage}"></div>
 </th:block>
+
+<div th:fragment="cover(book, size)" class="book-cover" th:classappend="${size}"
+     th:with="p=${T(com.onlinebookstore.util.BookCovers).palette(book.barcode)}"
+     th:style="|background-image: linear-gradient(150deg, ${p.c1}, ${p.c2})|">
+    <span class="cover-title" th:text="${book.name}">Book title</span>
+    <span class="cover-author" th:text="${book.author}">Author</span>
+</div>
 
 </body>
 </html>

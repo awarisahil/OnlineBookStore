@@ -2,36 +2,56 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments :: head('Welcome')}"></head>
 <body>
-<nav th:replace="~{fragments :: public-nav}"></nav>
+<nav th:replace="~{fragments :: site-nav}"></nav>
 
 <main class="container">
-    <section class="hero text-center">
-        <h1 class="display-5">Welcome to OnlineBookStore</h1>
-        <p class="lead text-muted">Browse the catalog, fill your cart, and check out.</p>
-        <a th:href="@{/login}" class="btn btn-primary btn-lg">Log in</a>
-        <a th:href="@{/register}" class="btn btn-outline-primary btn-lg ms-2">Create account</a>
+    <section class="hero text-center mb-5">
+        <p class="text-uppercase mb-2" style="letter-spacing: 0.2em; color: var(--gold-bright); font-size: 0.8rem;">A demo bookstore</p>
+        <h1 class="display-4 mb-3">Find your next great read</h1>
+        <p class="lead mb-4">Browse the shelves, fill your cart, and place orders — all in a cozy little storefront.</p>
+        <a th:href="@{/login}" class="btn btn-gold btn-lg">Log in</a>
+        <a th:href="@{/register}" class="btn btn-outline-light btn-lg ms-2">Create account</a>
     </section>
 
-    <div class="row g-4 text-center">
+    <section th:if="${!#lists.isEmpty(featured)}" class="mb-5">
+        <h2 class="page-heading text-center mb-4">On the shelf this week</h2>
+        <div class="row g-4 justify-content-center">
+            <div class="col-6 col-md-3" th:each="book : ${featured}">
+                <div class="book-cover mx-auto" style="max-width: 220px;"
+                     th:with="p=${T(com.onlinebookstore.util.BookCovers).palette(book.barcode)}"
+                     th:style="|background-image: linear-gradient(150deg, ${p.c1}, ${p.c2}); max-width: 220px;|">
+                    <span class="cover-title" th:text="${book.name}">Book title</span>
+                    <span class="cover-author" th:text="${book.author}">Author</span>
+                </div>
+            </div>
+        </div>
+        <p class="text-center mt-4">
+            <a th:href="@{/login}" class="btn btn-outline-primary">Browse the full catalog</a>
+        </p>
+    </section>
+
+    <section class="row g-4 text-center mb-4">
         <div class="col-md-4">
-            <div class="card h-100"><div class="card-body">
+            <div class="card book-card h-100"><div class="card-body">
                 <h5 class="card-title">Browse</h5>
-                <p class="card-text text-muted">Explore the book catalog with live stock information.</p>
+                <p class="card-text text-muted">A catalog of classics and curiosities with live stock information.</p>
             </div></div>
         </div>
         <div class="col-md-4">
-            <div class="card h-100"><div class="card-body">
+            <div class="card book-card h-100"><div class="card-body">
                 <h5 class="card-title">Shop</h5>
-                <p class="card-text text-muted">Add books to your cart and place orders in seconds.</p>
+                <p class="card-text text-muted">A session cart with quantities, totals, and instant receipts.</p>
             </div></div>
         </div>
         <div class="col-md-4">
-            <div class="card h-100"><div class="card-body">
+            <div class="card book-card h-100"><div class="card-body">
                 <h5 class="card-title">Sell</h5>
-                <p class="card-text text-muted">Manage the catalog: add, update, and remove books.</p>
+                <p class="card-text text-muted">An admin area to manage the catalog and watch sales come in.</p>
             </div></div>
         </div>
-    </div>
+    </section>
 </main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
 </body>
 </html>

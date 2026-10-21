@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments :: head('Page not found')}"></head>
 <body>
-<nav th:replace="~{fragments :: public-nav}"></nav>
+<nav th:replace="~{fragments :: site-nav}"></nav>
 
 <main class="container text-center py-5">
     <h1 class="display-4">404</h1>
@@ -11,5 +11,7 @@
     </p>
     <a th:href="@{/}" class="btn btn-primary">Back to home</a>
 </main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
 </body>
 </html>

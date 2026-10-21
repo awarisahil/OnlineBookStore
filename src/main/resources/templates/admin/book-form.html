@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments :: head(${book.barcode == null} ? 'Add Book' : 'Edit Book')}"></head>
 <body>
-<nav th:replace="~{fragments :: seller-nav}"></nav>
+<nav th:replace="~{fragments :: site-nav}"></nav>
 
 <main class="container">
     <h1 class="mb-4" th:text="${book.barcode == null} ? 'Add Book' : 'Edit Book'">Add Book</h1>
@@ -40,5 +40,7 @@
         <a th:href="@{/admin/books}" class="btn btn-link">Cancel</a>
     </form>
 </main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
 </body>
 </html>

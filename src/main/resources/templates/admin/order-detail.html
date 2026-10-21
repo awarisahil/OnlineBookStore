@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments :: head('Order detail')}"></head>
 <body>
-<nav th:replace="~{fragments :: seller-nav}"></nav>
+<nav th:replace="~{fragments :: site-nav}"></nav>
 
 <main class="container">
     <h1 class="mb-1" th:text="|Order #${order.id}|">Order #1</h1>
@@ -36,5 +36,7 @@
 
     <a th:href="@{/admin/orders}" class="btn btn-link">Back to sales history</a>
 </main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
 </body>
 </html>

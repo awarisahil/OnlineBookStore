@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments :: head('Receipt')}"></head>
 <body>
-<nav th:replace="~{fragments :: customer-nav}"></nav>
+<nav th:replace="~{fragments :: site-nav}"></nav>
 
 <main class="container">
     <h1 class="mb-4">Order placed — thank you!</h1>
@@ -40,5 +40,7 @@
 
     <a th:href="@{/books}" class="btn btn-primary">Continue shopping</a>
 </main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
 </body>
 </html>

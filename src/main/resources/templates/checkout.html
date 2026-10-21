@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments :: head('Checkout')}"></head>
 <body>
-<nav th:replace="~{fragments :: customer-nav}"></nav>
+<nav th:replace="~{fragments :: site-nav}"></nav>
 
 <main class="container">
     <h1 class="mb-4">Checkout</h1>
@@ -41,5 +41,7 @@
         </form>
     </div>
 </main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
 </body>
 </html>

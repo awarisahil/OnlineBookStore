@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments :: head('Inventory')}"></head>
 <body>
-<nav th:replace="~{fragments :: seller-nav}"></nav>
+<nav th:replace="~{fragments :: site-nav}"></nav>
 
 <main class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -30,7 +30,12 @@
         <tbody>
         <tr th:each="book : ${books}">
             <td class="text-muted small" th:text="${book.barcode}">barcode</td>
-            <td th:text="${book.name}">Name</td>
+            <td>
+                <div class="d-flex align-items-center gap-2">
+                    <div th:replace="~{fragments :: cover(${book}, 'cover-sm')}"></div>
+                    <span th:text="${book.name}">Name</span>
+                </div>
+            </td>
             <td th:text="${book.author}">Author</td>
             <td th:text="|₹ ${book.price}|">₹ 0.00</td>
             <td><span th:replace="~{fragments :: stock-badge(${book.quantity})}"></span></td>
@@ -46,5 +51,7 @@
         </tbody>
     </table>
 </main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
 </body>
 </html>
