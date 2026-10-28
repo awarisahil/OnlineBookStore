@@ -25,6 +25,36 @@ shopping cart, and place orders; sellers manage the catalog from an admin area.
 - Add books (server-generated UUID barcode), edit name/author/price/quantity, remove books
 - Sales history: every order with customer, items, and totals
 
+## Screenshots
+
+### Storefront
+
+![Home page](docs/screenshots/home.png)
+
+![Create account](docs/screenshots/register.png)
+
+![Log in](docs/screenshots/login.png)
+
+### Customer
+
+![Book catalog with live stock badges](docs/screenshots/catalog.png)
+
+![Shopping cart](docs/screenshots/cart.png)
+
+![Checkout](docs/screenshots/checkout.png)
+
+![Order receipt](docs/screenshots/receipt.png)
+
+![Order history](docs/screenshots/orders.png)
+
+### Seller (admin)
+
+![Book inventory](docs/screenshots/admin-inventory.png)
+
+![Add book](docs/screenshots/admin-add-book.png)
+
+![Sales history](docs/screenshots/admin-sales.png)
+
 ## Quickstart
 
 Prerequisites: JDK 17+ and Maven 3.9+ (or use the Dockerfile).
