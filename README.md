@@ -72,7 +72,7 @@ mvn spring-boot:run
 mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
-Then open http://localhost:8080
+Then open hxxxx
 
 ### Demo accounts (seeded on first start)
 
