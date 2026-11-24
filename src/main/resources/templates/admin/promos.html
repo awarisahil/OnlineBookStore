@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Promo codes')}"></head>
+<body>
+<nav th:replace="~{fragments :: site-nav}"></nav>
+
+<main class="container" style="max-width: 860px;">
+    <h1 class="mb-4">Promo codes</h1>
+    <div th:replace="~{fragments :: alerts}"></div>
+
+    <div class="card card-body mb-4">
+        <h2 class="h6">Create a promo code</h2>
+        <form th:action="@{/admin/promos}" method="post" th:object="${promo}" class="row g-2 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label small">Code</label>
+                <input type="text" th:field="*{code}" class="form-control" placeholder="SPRING20" required maxlength="50">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small">Percent off</label>
+                <input type="number" th:field="*{percentOff}" class="form-control" min="1" max="90" required>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small">Min order (₹)</label>
+                <input type="number" th:field="*{minOrder}" class="form-control" min="0" step="0.01" value="0">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small">Max uses</label>
+                <input type="number" th:field="*{maxUses}" class="form-control" min="1" placeholder="∞">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small">Expires</label>
+                <input type="datetime-local" th:field="*{expiresAt}" class="form-control">
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary w-100">Save</button>
+            </div>
+        </form>
+    </div>
+
+    <table class="table" th:unless="${#lists.isEmpty(promos)}">
+        <thead>
+        <tr>
+            <th>Code</th>
+            <th>Off</th>
+            <th>Min order</th>
+            <th>Used</th>
+            <th>Expires</th>
+            <th>Status</th>
+            <th class="text-end"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="p : ${promos}">
+            <td><code th:text="${p.code}">WELCOME10</code></td>
+            <td th:text="|${p.percentOff}%|">10%</td>
+            <td th:text="|₹ ${p.minOrder}|">₹ 0.00</td>
+            <td th:text="${p.maxUses == null} ? ${p.usedCount} + ' / ∞' : ${p.usedCount} + ' / ' + ${p.maxUses}">0</td>
+            <td th:text="${p.expiresAt == null} ? 'never' : ${#temporals.format(p.expiresAt, 'dd MMM yyyy HH:mm')}">never</td>
+            <td><span class="badge" th:classappend="${p.active and p.usable} ? 'text-bg-success' : 'text-bg-secondary'"
+                      th:text="${p.active and p.usable} ? 'Active' : 'Inactive'">Active</span></td>
+            <td class="text-end">
+                <form class="d-inline" th:action="@{/admin/promos/{c}/toggle(c=${p.code})}" method="post">
+                    <button type="submit" class="btn btn-outline-secondary btn-sm"
+                            th:text="${p.active} ? 'Deactivate' : 'Activate'">Deactivate</button>
+                </form>
+                <form class="d-inline" th:action="@{/admin/promos/{c}/delete(c=${p.code})}" method="post"
+                      onsubmit="return confirm('Delete this promo code?');">
+                    <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+</body>
+</html>

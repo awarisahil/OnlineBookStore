@@ -65,7 +65,7 @@ public class BookController {
 
     @GetMapping("/{barcode}")
     public String detail(@PathVariable String barcode, Principal principal, Model model) {
-        Book book = bookService.findByBarcode(barcode);
+        Book book = bookService.findDetailedByBarcode(barcode);
         if (principal != null) {
             recentlyViewedService.record(principal.getName(), barcode);
         }

@@ -55,6 +55,13 @@ public class BookService {
         return bookRepository.findById(barcode).orElseThrow(() -> new BookNotFoundException(barcode));
     }
 
+    /** Detail-page lookup that eagerly loads the category for view rendering. */
+    @Transactional(readOnly = true)
+    public Book findDetailedByBarcode(String barcode) {
+        return bookRepository.findByBarcodeWithCategory(barcode)
+                .orElseThrow(() -> new BookNotFoundException(barcode));
+    }
+
     @Transactional
     public Book create(Book book) {
         book.setBarcode(UUID.randomUUID().toString());
@@ -90,7 +97,8 @@ public class BookService {
     @Transactional
     public void delete(String barcode) {
         Book book = findByBarcode(barcode);
-        reviewRepository.findByBookIdOrderByCreatedAtDesc(barcode).forEach(reviewRepository::delete);
+        reviewRepository.findByBookBarcodeOrderByCreatedAtDesc(barcode)
+                .forEach(reviewRepository::delete);
         wishlistRepository.deleteByBookId(barcode);
         stockNotificationRepository.findByBookIdAndNotifiedFalse(barcode)
                 .forEach(stockNotificationRepository::delete);

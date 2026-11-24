@@ -5,9 +5,21 @@
 <nav th:replace="~{fragments :: site-nav}"></nav>
 
 <main class="container">
-    <h1 class="mb-4">Sales History</h1>
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <h1 class="mb-0">Sales History</h1>
+        <a th:href="@{/admin/export/orders.csv}" class="btn btn-outline-secondary btn-sm">Export CSV</a>
+    </div>
 
-    <div th:if="${#lists.isEmpty(orders)}" class="alert alert-info">No orders have been placed yet.</div>
+    <div class="mb-3">
+        <a class="btn filter-chip btn-sm"
+           th:classappend="${status == ''} ? 'btn-primary' : 'btn-outline-primary'"
+           th:href="@{/admin/orders}">All</a>
+        <a th:each="s : ${ {'PLACED','SHIPPED','DELIVERED','CANCELLED'} }" class="btn filter-chip btn-sm ms-1"
+           th:classappend="${status == s} ? 'btn-primary' : 'btn-outline-primary'"
+           th:href="@{/admin/orders(status=${s})}" th:text="${s}">PLACED</a>
+    </div>
+
+    <div th:if="${#lists.isEmpty(orders)}" class="alert alert-info">No orders in this view.</div>
 
     <table class="table" th:unless="${#lists.isEmpty(orders)}">
         <thead>
@@ -15,6 +27,7 @@
             <th>Order #</th>
             <th>Customer</th>
             <th>Placed</th>
+            <th>Status</th>
             <th class="text-end">Total</th>
             <th></th>
         </tr>
@@ -24,6 +37,7 @@
             <td th:text="${order.id}">1</td>
             <td th:text="${order.customer.email}">customer@example.com</td>
             <td th:text="${#temporals.format(order.placedAt, 'dd MMM yyyy, HH:mm')}">date</td>
+            <td><span th:replace="~{fragments :: order-status-badge(${order.status})}"></span></td>
             <td class="text-end" th:text="|₹ ${order.total}|">₹ 0.00</td>
             <td class="text-end">
                 <a class="btn btn-outline-primary btn-sm" th:href="@{/admin/orders/{id}(id=${order.id})}">View</a>

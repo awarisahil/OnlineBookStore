@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Contact')}"></head>
+<body>
+<nav th:replace="~{fragments :: site-nav}"></nav>
+
+<main class="container" style="max-width: 640px;">
+    <h1 class="page-heading mb-1">Contact us</h1>
+    <p class="text-muted mb-4">Questions about an order or the catalog? Send a note to the seller.</p>
+
+    <div th:if="${sent}" class="alert alert-success">
+        Thanks — your message has been sent. The seller reads the store inbox from the admin area.
+    </div>
+
+    <form th:unless="${sent}" th:action="@{/contact}" method="post" th:object="${form}" class="card card-body">
+        <div class="mb-3">
+            <label class="form-label">Your name</label>
+            <input type="text" th:field="*{name}" class="form-control" th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'">
+            <div class="invalid-feedback" th:errors="*{name}"></div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" th:field="*{email}" class="form-control" th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'">
+            <div class="invalid-feedback" th:errors="*{email}"></div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Subject</label>
+            <input type="text" th:field="*{subject}" class="form-control" th:classappend="${#fields.hasErrors('subject')} ? 'is-invalid'">
+            <div class="invalid-feedback" th:errors="*{subject}"></div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Message</label>
+            <textarea th:field="*{message}" rows="5" class="form-control" th:classappend="${#fields.hasErrors('message')} ? 'is-invalid'"></textarea>
+            <div class="invalid-feedback" th:errors="*{message}"></div>
+        </div>
+        <button type="submit" class="btn btn-primary">Send message</button>
+    </form>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+</body>
+</html>

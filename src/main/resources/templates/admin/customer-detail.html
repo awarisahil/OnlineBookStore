@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Customer detail')}"></head>
+<body>
+<nav th:replace="~{fragments :: site-nav}"></nav>
+
+<main class="container">
+    <h1 class="mb-1" th:text="${customer.fullName}">Reader</h1>
+    <p class="text-muted" th:text="${customer.email}">reader@example.com</p>
+
+    <div th:replace="~{fragments :: alerts}"></div>
+
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="card card-body">
+                <h2 class="h6">Details</h2>
+                <p class="small mb-1"><strong>Phone:</strong> <span th:text="${customer.phone}">123456</span></p>
+                <p class="small mb-1"><strong>Address:</strong> <span th:text="${customer.address}">Address</span></p>
+                <p class="small mb-1"><strong>Role:</strong> <span th:text="${customer.role}">CUSTOMER</span></p>
+                <p class="small mb-3"><strong>Status:</strong>
+                    <span th:text="${customer.enabled} ? 'Active' : 'Disabled'">Active</span>
+                </p>
+                <div class="d-flex flex-column gap-2">
+                    <form th:action="@{/admin/customers/{e}/role(e=${customer.email})}" method="post">
+                        <button type="submit" class="btn btn-outline-primary btn-sm w-100">
+                            Make <span th:text="${customer.role.name() == 'SELLER'} ? 'customer' : 'seller'">seller</span>
+                        </button>
+                    </form>
+                    <form th:action="@{/admin/customers/{e}/enable(e=${customer.email})}" method="post">
+                        <button type="submit" class="btn btn-sm w-100"
+                                th:classappend="${customer.enabled} ? 'btn-outline-danger' : 'btn-outline-success'"
+                                th:text="${customer.enabled} ? 'Disable account' : 'Enable account'">Disable</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card book-card">
+                <div class="card-body">
+                    <h2 class="h6">Order history</h2>
+                    <p th:if="${#lists.isEmpty(orders)}" class="text-muted mb-0">No orders yet.</p>
+                    <table class="table mb-0" th:unless="${#lists.isEmpty(orders)}">
+                        <thead>
+                        <tr>
+                            <th>Order #</th>
+                            <th>Placed</th>
+                            <th>Status</th>
+                            <th class="text-end">Total</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="order : ${orders}">
+                            <td>
+                                <a th:href="@{/admin/orders/{id}(id=${order.id})}" th:text="${order.id}">1</a>
+                            </td>
+                            <td th:text="${#temporals.format(order.placedAt, 'dd MMM yyyy, HH:mm')}">date</td>
+                            <td><span th:replace="~{fragments :: order-status-badge(${order.status})}"></span></td>
+                            <td class="text-end" th:text="|₹ ${order.total}|">₹ 0.00</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p class="mt-3"><a th:href="@{/admin/customers}" class="btn btn-link">Back to customers</a></p>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+</body>
+</html>

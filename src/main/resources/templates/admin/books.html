@@ -13,6 +13,7 @@
     <div th:if="${param.created != null}" class="alert alert-success">Book added successfully.</div>
     <div th:if="${param.updated != null}" class="alert alert-success">Book updated successfully.</div>
     <div th:if="${param.deleted != null}" class="alert alert-success">Book removed successfully.</div>
+    <div th:replace="~{fragments :: alerts}"></div>
 
     <p th:if="${#lists.isEmpty(books)}" class="text-muted">No books in the store yet — add your first one.</p>
 
@@ -21,7 +22,7 @@
         <tr>
             <th>Barcode</th>
             <th>Name</th>
-            <th>Author</th>
+            <th>Category</th>
             <th>Price</th>
             <th>Stock</th>
             <th class="text-end">Actions</th>
@@ -33,15 +34,27 @@
             <td>
                 <div class="d-flex align-items-center gap-2">
                     <div th:replace="~{fragments :: cover(${book}, 'cover-sm')}"></div>
-                    <span th:text="${book.name}">Name</span>
+                    <span>
+                        <span th:text="${book.name}">Name</span>
+                        <button type="button" class="btn btn-link btn-sm p-0 ms-1" title="Toggle featured on home page"
+                                th:form="${'feature-form-' + book.barcode}"
+                                onclick="document.getElementById(this.getAttribute('form')).submit()"
+                                th:text="${book.featured} ? '★' : '☆'">☆</button>
+                    </span>
                 </div>
+                <form th:id="${'feature-form-' + book.barcode}" th:action="@{/admin/books/{b}/feature(b=${book.barcode})}"
+                      method="post" class="d-none"></form>
             </td>
-            <td th:text="${book.author}">Author</td>
+            <td th:text="${book.category != null} ? ${book.category.name} : '—'">Category</td>
             <td th:text="|₹ ${book.price}|">₹ 0.00</td>
             <td><span th:replace="~{fragments :: stock-badge(${book.quantity})}"></span></td>
             <td class="text-end">
                 <a class="btn btn-outline-primary btn-sm"
                    th:href="@{/admin/books/{b}/edit(b=${book.barcode})}">Edit</a>
+                <form class="d-inline" th:action="@{/admin/books/{b}/restock(b=${book.barcode})}" method="post">
+                    <input type="hidden" name="amount" value="10">
+                    <button type="submit" class="btn btn-outline-success btn-sm">+10</button>
+                </form>
                 <form class="d-inline" th:action="@{/admin/books/{b}/delete(b=${book.barcode})}" method="post"
                       onsubmit="return confirm('Remove this book from the store?');">
                     <button type="submit" class="btn btn-outline-danger btn-sm">Remove</button>

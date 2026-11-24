@@ -21,7 +21,7 @@ public interface OrderRepository extends JpaRepository<ShopOrder, Long> {
     @EntityGraph(attributePaths = { "customer" })
     List<ShopOrder> findByStatusOrderByPlacedAtDesc(OrderStatus status);
 
-    @EntityGraph(attributePaths = { "items" })
+    @EntityGraph(attributePaths = { "items", "customer" })
     Optional<ShopOrder> findByIdAndCustomerEmail(Long id, String customerEmail);
 
     @EntityGraph(attributePaths = { "items", "customer" })

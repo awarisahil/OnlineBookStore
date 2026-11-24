@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,7 @@ import com.onlinebookstore.service.ReviewService;
 /** Read-only JSON API used by the search autocomplete and available for integrations. */
 @RestController
 @RequestMapping("/api")
+@Transactional(readOnly = true)
 public class ApiController {
 
     private final CatalogService catalogService;

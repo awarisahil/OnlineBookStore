@@ -25,6 +25,16 @@
         </tr>
         </tbody>
         <tfoot>
+        <tr th:if="${receipt.discount != null and receipt.discount.compareTo(T(java.math.BigDecimal).ZERO) > 0}">
+            <th colspan="2" class="text-end">Subtotal</th>
+            <th class="text-end" th:text="|₹ ${receipt.subtotal}|">₹ 0.00</th>
+        </tr>
+        <tr th:if="${receipt.discount != null and receipt.discount.compareTo(T(java.math.BigDecimal).ZERO) > 0}">
+            <th colspan="2" class="text-end">
+                Promo <span class="badge text-bg-success" th:text="${receipt.promoCode}">WELCOME10</span>
+            </th>
+            <th class="text-end" th:text="|- ₹ ${receipt.discount}|">- ₹ 0.00</th>
+        </tr>
         <tr>
             <th colspan="2" class="text-end">Total paid</th>
             <th class="text-end" th:text="|₹ ${receipt.total}|">₹ 0.00</th>

@@ -5,36 +5,83 @@
 <nav th:replace="~{fragments :: site-nav}"></nav>
 
 <main class="container">
-    <h1 class="mb-1" th:text="|Order #${order.id}|">Order #1</h1>
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-1">
+        <h1 th:text="|Order #${order.id}|">Order #1</h1>
+        <span th:replace="~{fragments :: order-status-badge(${order.status})}"></span>
+    </div>
     <p class="text-muted">
         Customer <strong th:text="${order.customer.email}">customer@example.com</strong> ·
         placed on <span th:text="${#temporals.format(order.placedAt, 'dd MMM yyyy, HH:mm')}">date</span>
     </p>
 
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Book</th>
-            <th>Quantity</th>
-            <th class="text-end">Amount</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="item : ${order.items}">
-            <td th:text="${item.name}">Book</td>
-            <td th:text="${item.quantity}">1</td>
-            <td class="text-end" th:text="|₹ ${item.amount}|">₹ 0.00</td>
-        </tr>
-        </tbody>
-        <tfoot>
-        <tr>
-            <th colspan="2" class="text-end">Total</th>
-            <th class="text-end" th:text="|₹ ${order.total}|">₹ 0.00</th>
-        </tr>
-        </tfoot>
-    </table>
+    <div th:replace="~{fragments :: alerts}"></div>
 
-    <a th:href="@{/admin/orders}" class="btn btn-link">Back to sales history</a>
+    <div class="row g-5">
+        <div class="col-lg-8">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Book</th>
+                    <th>Quantity</th>
+                    <th class="text-end">Amount</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${order.items}">
+                    <td th:text="${item.name}">Book</td>
+                    <td th:text="${item.quantity}">1</td>
+                    <td class="text-end" th:text="|₹ ${item.amount}|">₹ 0.00</td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr th:if="${order.discount.compareTo(T(java.math.BigDecimal).ZERO) > 0}">
+                    <th colspan="2" class="text-end">Subtotal</th>
+                    <th class="text-end" th:text="|₹ ${order.total.add(order.discount)}|">₹ 0.00</th>
+                </tr>
+                <tr th:if="${order.discount.compareTo(T(java.math.BigDecimal).ZERO) > 0}">
+                    <th colspan="2" class="text-end">
+                        Promo <span class="badge text-bg-success" th:text="${order.promoCode}">WELCOME10</span>
+                    </th>
+                    <th class="text-end" th:text="|- ₹ ${order.discount}|">- ₹ 0.00</th>
+                </tr>
+                <tr>
+                    <th colspan="2" class="text-end">Total</th>
+                    <th class="text-end" th:text="|₹ ${order.total}|">₹ 0.00</th>
+                </tr>
+                </tfoot>
+            </table>
+
+            <div class="alert alert-danger" th:if="${order.cancelReason != null}">
+                Cancelled: <span th:text="${order.cancelReason}">reason</span>
+            </div>
+
+            <div class="d-flex gap-2 flex-wrap">
+                <a th:href="@{/admin/orders}" class="btn btn-link">Back to sales history</a>
+                <form th:if="${order.status.name() == 'PLACED'}" th:action="@{/admin/orders/{id}/advance(id=${order.id})}"
+                      method="post" class="ms-auto">
+                    <button type="submit" class="btn btn-primary">Mark as shipped</button>
+                </form>
+                <form th:if="${order.status.name() == 'SHIPPED'}" th:action="@{/admin/orders/{id}/advance(id=${order.id})}"
+                      method="post" class="ms-auto">
+                    <button type="submit" class="btn btn-primary">Mark as delivered</button>
+                </form>
+                <form th:if="${order.status.name() == 'PLACED'}" th:action="@{/admin/orders/{id}/cancel(id=${order.id})}"
+                      method="post" class="d-flex gap-2"
+                      onsubmit="return confirm('Cancel this order? Stock will be returned.');">
+                    <input type="text" name="reason" class="form-control form-control-sm" placeholder="Reason" required
+                           style="max-width: 220px;">
+                    <button type="submit" class="btn btn-outline-danger">Cancel order</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card card-body">
+                <h2 class="h6">Delivery address</h2>
+                <p class="small mb-0" th:text="${order.shippingAddress}">Address</p>
+            </div>
+        </div>
+    </div>
 </main>
 
 <footer th:replace="~{fragments :: footer}"></footer>

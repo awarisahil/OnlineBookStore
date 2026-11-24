@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Reviews')}"></head>
+<body>
+<nav th:replace="~{fragments :: site-nav}"></nav>
+
+<main class="container">
+    <h1 class="mb-4">Review moderation</h1>
+    <div th:replace="~{fragments :: alerts}"></div>
+
+    <p th:if="${#lists.isEmpty(reviews)}" class="text-muted">No reviews yet.</p>
+
+    <div th:each="review : ${reviews}" class="card review-card mb-3"
+         th:classappend="${review.hidden} ? 'opacity-50'">
+        <div class="card-body">
+            <div class="d-flex justify-content-between flex-wrap gap-2">
+                <div>
+                    <strong th:text="${review.book.name}">Book</strong>
+                    <span class="text-muted"> reviewed by </span>
+                    <strong th:text="${review.customer.email}">reader</strong>
+                    <span th:replace="~{fragments :: stars(${review.rating})}"></span>
+                </div>
+                <span class="text-muted small"
+                      th:text="${#temporals.format(review.createdAt, 'dd MMM yyyy, HH:mm')}">date</span>
+            </div>
+            <p class="mb-2 mt-2" th:text="${review.text}">Review text</p>
+            <div class="d-flex gap-2">
+                <form th:if="${!review.hidden}" th:action="@{/admin/reviews/{id}/hide(id=${review.id})}" method="post">
+                    <button type="submit" class="btn btn-outline-warning btn-sm">Hide</button>
+                </form>
+                <form th:if="${review.hidden}" th:action="@{/admin/reviews/{id}/show(id=${review.id})}" method="post">
+                    <button type="submit" class="btn btn-outline-success btn-sm">Unhide</button>
+                </form>
+                <form th:action="@{/admin/reviews/{id}/delete(id=${review.id})}" method="post"
+                      onsubmit="return confirm('Delete this review permanently?');">
+                    <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+</body>
+</html>

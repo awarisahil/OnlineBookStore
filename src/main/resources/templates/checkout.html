@@ -7,38 +7,57 @@
 <main class="container">
     <h1 class="mb-4">Checkout</h1>
 
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Book</th>
-            <th>Quantity</th>
-            <th class="text-end">Amount</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="line : ${lines}">
-            <td th:text="${line.name}">Book</td>
-            <td th:text="${line.quantity}">1</td>
-            <td class="text-end" th:text="|₹ ${line.amount}|">₹ 0.00</td>
-        </tr>
-        </tbody>
-        <tfoot>
-        <tr>
-            <th colspan="2" class="text-end">Total to pay</th>
-            <th class="text-end" th:text="|₹ ${total}|">₹ 0.00</th>
-        </tr>
-        </tfoot>
-    </table>
-
-    <div class="alert alert-info">
-        This is a demo store — placing an order simulates payment. No card or payment details are collected.
-    </div>
-
-    <div class="d-flex justify-content-end gap-2">
-        <a th:href="@{/cart}" class="btn btn-link">Back to cart</a>
-        <form th:action="@{/pay}" method="post">
-            <button type="submit" class="btn btn-primary btn-lg">Place Order</button>
-        </form>
+    <div class="row g-5">
+        <div class="col-lg-8">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Book</th>
+                    <th>Quantity</th>
+                    <th class="text-end">Amount</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="line : ${lines}">
+                    <td th:text="${line.name}">Book</td>
+                    <td th:text="${line.quantity}">1</td>
+                    <td class="text-end" th:text="|₹ ${line.amount}|">₹ 0.00</td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr th:if="${discount != null}">
+                    <th colspan="2" class="text-end">Subtotal</th>
+                    <th class="text-end" th:text="|₹ ${subtotal}|">₹ 0.00</th>
+                </tr>
+                <tr th:if="${discount != null}">
+                    <th colspan="2" class="text-end">
+                        Promo <span class="badge text-bg-success" th:text="${promo.code}">WELCOME10</span>
+                    </th>
+                    <th class="text-end" th:text="|- ₹ ${discount}|">- ₹ 0.00</th>
+                </tr>
+                <tr>
+                    <th colspan="2" class="text-end">Total to pay</th>
+                    <th class="text-end" th:text="|₹ ${total}|">₹ 0.00</th>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div class="col-lg-4">
+            <div class="card card-body">
+                <h2 class="h6">Deliver to</h2>
+                <p class="mb-1" th:text="${#authentication.principal.username}">you@example.com</p>
+                <p class="small text-muted mb-3">Manage this address from your profile.</p>
+                <div class="alert alert-info small mb-3">
+                    This is a demo store — placing an order simulates payment. No card or payment details are collected.
+                </div>
+                <div class="d-flex gap-2">
+                    <a th:href="@{/cart}" class="btn btn-link">Back to cart</a>
+                    <form th:action="@{/pay}" method="post" class="ms-auto">
+                        <button type="submit" class="btn btn-primary">Place Order</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </main>
 

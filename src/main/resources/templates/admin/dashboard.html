@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Dashboard')}"></head>
+<body>
+<nav th:replace="~{fragments :: site-nav}"></nav>
+
+<main class="container">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <h1 class="page-heading mb-0">Store dashboard</h1>
+        <div class="d-flex gap-2">
+            <a th:href="@{/admin/export/orders.csv}" class="btn btn-outline-secondary btn-sm">Export orders CSV</a>
+            <a th:href="@{/admin/export/books.csv}" class="btn btn-outline-secondary btn-sm">Export books CSV</a>
+            <a th:href="@{/admin/export/customers.csv}" class="btn btn-outline-secondary btn-sm">Export customers CSV</a>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="stat-label">Revenue</div>
+                <div class="stat-value" th:text="|₹ ${revenue}|">₹ 0.00</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="stat-label">Orders</div>
+                <div class="stat-value" th:text="${orderCount}">0</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="stat-label">Copies sold</div>
+                <div class="stat-value" th:text="${copiesSold}">0</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="stat-label">Customers</div>
+                <div class="stat-value" th:text="${customerCount}">0</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card book-card h-100">
+                <div class="card-body">
+                    <h2 class="h5 page-heading mb-3">Bestsellers</h2>
+                    <p th:if="${#lists.isEmpty(bestsellers)}" class="text-muted">No sales yet.</p>
+                    <div th:each="book, iter : ${bestsellers}" class="bar-row">
+                        <span class="bar-label" th:text="${book.name}">Book</span>
+                        <span class="bar-track">
+                            <span class="bar-fill" th:style="|width: ${100 - iter.index * 18}%|"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card book-card h-100">
+                <div class="card-body">
+                    <h2 class="h5 page-heading mb-3">Recent orders</h2>
+                    <p th:if="${#lists.isEmpty(recentOrders)}" class="text-muted">No orders yet.</p>
+                    <ul class="list-group list-group-flush" th:unless="${#lists.isEmpty(recentOrders)}">
+                        <li class="list-group-item d-flex justify-content-between align-items-center"
+                            th:each="order : ${recentOrders}">
+                            <span>
+                                #<span th:text="${order.id}">1</span>
+                                <span class="text-muted" th:text="${order.customer.email}">customer</span>
+                            </span>
+                            <span>
+                                <span th:replace="~{fragments :: order-status-badge(${order.status})}"></span>
+                                <a class="btn btn-sm btn-link" th:href="@{/admin/orders/{id}(id=${order.id})}">View</a>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card book-card h-100">
+                <div class="card-body">
+                    <h2 class="h5 page-heading mb-3">Low stock alerts</h2>
+                    <p th:if="${#lists.isEmpty(lowStock)}" class="text-muted">Everything is well stocked.</p>
+                    <ul class="list-group list-group-flush" th:unless="${#lists.isEmpty(lowStock)}">
+                        <li class="list-group-item d-flex justify-content-between align-items-center"
+                            th:each="book : ${lowStock}">
+                            <span th:text="${book.name}">Book</span>
+                            <form th:action="@{/admin/books/{b}/restock(b=${book.barcode})}" method="post"
+                                  class="d-flex align-items-center gap-2">
+                                <span th:replace="~{fragments :: stock-badge(${book.quantity})}"></span>
+                                <input type="hidden" name="amount" value="10">
+                                <button type="submit" class="btn btn-outline-primary btn-sm">+10</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card book-card h-100">
+                <div class="card-body">
+                    <h2 class="h5 page-heading mb-3">Quick links</h2>
+                    <div class="d-flex flex-column gap-2">
+                        <a th:href="@{/admin/books/new}" class="btn btn-outline-primary">Add a book</a>
+                        <a th:href="@{/admin/promos}" class="btn btn-outline-primary">Manage promo codes</a>
+                        <a th:href="@{/admin/messages}" class="btn btn-outline-primary">Customer messages
+                            <span th:if="${unreadMessages > 0}" class="badge text-bg-danger" th:text="${unreadMessages}">1</span></a>
+                        <a th:href="@{/admin/messages/audit}" class="btn btn-outline-primary">Audit log</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Messages')}"></head>
+<body>
+<nav th:replace="~{fragments :: site-nav}"></nav>
+
+<main class="container" style="max-width: 860px;">
+    <h1 class="mb-4">Customer messages</h1>
+    <div th:replace="~{fragments :: alerts}"></div>
+
+    <p th:if="${#lists.isEmpty(messages)}" class="text-muted">The inbox is empty.</p>
+
+    <div th:each="message : ${messages}" class="card mb-3" th:classappend="${!message.readFlag} ? 'border-primary'">
+        <div class="card-body">
+            <div class="d-flex justify-content-between flex-wrap gap-2">
+                <strong th:text="${message.subject}">Subject</strong>
+                <span class="text-muted small"
+                      th:text="${#temporals.format(message.createdAt, 'dd MMM yyyy, HH:mm')}">date</span>
+            </div>
+            <p class="small text-muted mb-2">
+                From <strong th:text="${message.name}">Name</strong>
+                &lt;<span th:text="${message.email}">email</span>&gt;
+            </p>
+            <p th:text="${message.message}">Message body</p>
+            <div class="d-flex gap-2">
+                <form th:if="${!message.readFlag}" th:action="@{/admin/messages/{id}/read(id=${message.id})}"
+                      method="post">
+                    <button type="submit" class="btn btn-outline-primary btn-sm">Mark read</button>
+                </form>
+                <form th:action="@{/admin/messages/{id}/delete(id=${message.id})}" method="post"
+                      onsubmit="return confirm('Delete this message?');">
+                    <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+</body>
+</html>

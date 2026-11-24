@@ -4,7 +4,7 @@
 <body>
 <nav th:replace="~{fragments :: site-nav}"></nav>
 
-<main class="container">
+<main class="container" style="max-width: 760px;">
     <h1 class="mb-4" th:text="${book.barcode == null} ? 'Add Book' : 'Edit Book'">Add Book</h1>
 
     <form th:action="${book.barcode == null} ? @{/admin/books} : @{/admin/books/{b}(b=${book.barcode})}"
@@ -21,19 +21,45 @@
             <input type="text" class="form-control" id="author" th:field="*{author}" required>
             <div class="text-danger small mt-1" th:if="${#fields.hasErrors('author')}" th:errors="*{author}"></div>
         </div>
+        <div class="mb-3">
+            <label class="form-label" for="category">Category</label>
+            <select class="form-select" id="category" th:field="*{category}">
+                <option value="">— No category —</option>
+                <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}">Category</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="description">Description</label>
+            <textarea class="form-control" id="description" th:field="*{description}" rows="4" maxlength="2000"></textarea>
+            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+        </div>
         <div class="row">
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
                 <label class="form-label" for="price">Price (₹)</label>
                 <input type="number" class="form-control" id="price" th:field="*{price}"
                        step="0.01" min="0" required>
                 <div class="text-danger small mt-1" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
             </div>
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
                 <label class="form-label" for="quantity">Quantity in stock</label>
                 <input type="number" class="form-control" id="quantity" th:field="*{quantity}"
                        step="1" min="0" required>
                 <div class="text-danger small mt-1" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></div>
             </div>
+            <div class="col-md-2 mb-3">
+                <label class="form-label" for="publishedYear">Year</label>
+                <input type="number" class="form-control" id="publishedYear" th:field="*{publishedYear}"
+                       step="1" min="0" max="2100">
+            </div>
+            <div class="col-md-2 mb-3">
+                <label class="form-label" for="pages">Pages</label>
+                <input type="number" class="form-control" id="pages" th:field="*{pages}"
+                       step="1" min="0">
+            </div>
+        </div>
+        <div class="form-check mb-4">
+            <input type="checkbox" class="form-check-input" id="featured" th:field="*{featured}">
+            <label class="form-check-label" for="featured">Feature on the home page</label>
         </div>
 
         <button type="submit" class="btn btn-primary">Save</button>

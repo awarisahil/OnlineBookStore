@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('FAQ')}"></head>
+<body>
+<nav th:replace="~{fragments :: site-nav}"></nav>
+
+<main class="container" style="max-width: 760px;">
+    <h1 class="page-heading mb-4">Frequently asked questions</h1>
+
+    <div class="accordion" id="faq">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                    Is this a real store?
+                </button>
+            </h2>
+            <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faq">
+                <div class="accordion-body">
+                    No — OnlineBookStore is a demo application. Orders, payments, and stock are simulated locally;
+                    no card details are ever collected.
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                    How do promo codes work?
+                </button>
+            </h2>
+            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faq">
+                <div class="accordion-body">
+                    Add books to your cart, then enter a promo code in the box below your cart totals. Try
+                    <code>WELCOME10</code> for 10% off your order. Codes can have minimum-order amounts, usage
+                    limits, and expiry dates set by the seller.
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                    Can I cancel an order?
+                </button>
+            </h2>
+            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faq">
+                <div class="accordion-body">
+                    Yes — while an order is still <strong>Placed</strong> you can cancel it from your order history.
+                    The stock is returned to the shelf automatically. Once it has been shipped, cancellations are
+                    handled by the seller.
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                    What does "Notify me when available" do?
+                </button>
+            </h2>
+            <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faq">
+                <div class="accordion-body">
+                    Sold-out books show a notify button on their detail page. Signing up queues a (simulated) email
+                    that goes out as soon as the seller restocks the book.
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                    How do book reviews work?
+                </button>
+            </h2>
+            <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faq">
+                <div class="accordion-body">
+                    Any logged-in customer can review a book once — your latest review replaces the earlier one.
+                    The seller can hide inappropriate reviews from the admin area.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p class="mt-4 text-muted">Still stuck? <a th:href="@{/contact}">Contact the seller</a>.</p>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+</body>
+</html>

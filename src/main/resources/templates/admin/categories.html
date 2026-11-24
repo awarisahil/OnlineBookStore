@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Categories')}"></head>
+<body>
+<nav th:replace="~{fragments :: site-nav}"></nav>
+
+<main class="container" style="max-width: 720px;">
+    <h1 class="mb-4">Categories</h1>
+
+    <div th:replace="~{fragments :: alerts}"></div>
+
+    <form th:action="@{/admin/categories}" method="post" th:object="${category}" class="d-flex gap-2 mb-4">
+        <input type="text" th:field="*{name}" class="form-control" placeholder="New category name" required
+               maxlength="100">
+        <button type="submit" class="btn btn-primary">Add</button>
+    </form>
+
+    <table class="table" th:unless="${#lists.isEmpty(categories)}">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th class="text-end"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="cat : ${categories}">
+            <td th:text="${cat.name}">Category</td>
+            <td class="text-end">
+                <a class="btn btn-outline-primary btn-sm" th:href="@{/books(category=${cat.id})}">View books</a>
+                <form class="d-inline" th:action="@{/admin/categories/{id}/delete(id=${cat.id})}" method="post"
+                      onsubmit="return confirm('Delete this category?');">
+                    <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+</body>
+</html>

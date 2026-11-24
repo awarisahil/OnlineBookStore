@@ -1,6 +1,7 @@
 package com.onlinebookstore.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +34,13 @@ public interface BookRepository extends JpaRepository<Book, String>, JpaSpecific
 
     @EntityGraph(attributePaths = { "category" })
     Page<Book> findAll(Pageable pageable);
+
+    @EntityGraph(attributePaths = { "category" })
+    @Override
+    List<Book> findAll();
+
+    @Query("SELECT b FROM Book b LEFT JOIN FETCH b.category WHERE b.barcode = :barcode")
+    Optional<Book> findByBarcodeWithCategory(@Param("barcode") String barcode);
 
     List<Book> findTop6ByFeaturedTrueOrderByCreatedAtDesc();
 

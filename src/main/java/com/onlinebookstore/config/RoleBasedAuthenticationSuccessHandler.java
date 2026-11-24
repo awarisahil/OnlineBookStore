@@ -19,7 +19,7 @@ public class RoleBasedAuthenticationSuccessHandler implements AuthenticationSucc
             Authentication authentication) throws IOException {
         String target = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .anyMatch("ROLE_SELLER"::equals) ? "/admin/books" : "/books";
+                .anyMatch("ROLE_SELLER"::equals) ? "/admin" : "/books";
         response.sendRedirect(request.getContextPath() + target);
     }
 }

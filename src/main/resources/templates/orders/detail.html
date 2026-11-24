@@ -5,35 +5,99 @@
 <nav th:replace="~{fragments :: site-nav}"></nav>
 
 <main class="container">
-    <h1 class="mb-1" th:text="|Order #${order.id}|">Order #1</h1>
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-1">
+        <h1 th:text="|Order #${order.id}|">Order #1</h1>
+        <span th:replace="~{fragments :: order-status-badge(${order.status})}"></span>
+    </div>
     <p class="text-muted">
         Placed on <span th:text="${#temporals.format(order.placedAt, 'dd MMM yyyy, HH:mm')}">date</span>
     </p>
 
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Book</th>
-            <th>Quantity</th>
-            <th class="text-end">Amount</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="item : ${order.items}">
-            <td th:text="${item.name}">Book</td>
-            <td th:text="${item.quantity}">1</td>
-            <td class="text-end" th:text="|₹ ${item.amount}|">₹ 0.00</td>
-        </tr>
-        </tbody>
-        <tfoot>
-        <tr>
-            <th colspan="2" class="text-end">Total</th>
-            <th class="text-end" th:text="|₹ ${order.total}|">₹ 0.00</th>
-        </tr>
-        </tfoot>
-    </table>
+    <div th:replace="~{fragments :: alerts}"></div>
 
-    <a th:href="@{/orders}" class="btn btn-link">Back to my orders</a>
+    <div class="row g-5">
+        <div class="col-lg-8">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Book</th>
+                    <th>Quantity</th>
+                    <th class="text-end">Amount</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${order.items}">
+                    <td>
+                        <a class="book-link text-decoration-none" th:href="@{/books/{b}(b=${item.barcode})}"
+                           th:text="${item.name}">Book</a>
+                    </td>
+                    <td th:text="${item.quantity}">1</td>
+                    <td class="text-end" th:text="|₹ ${item.amount}|">₹ 0.00</td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr th:if="${order.discount.compareTo(T(java.math.BigDecimal).ZERO) > 0}">
+                    <th colspan="2" class="text-end">Subtotal</th>
+                    <th class="text-end" th:text="|₹ ${order.total.add(order.discount)}|">₹ 0.00</th>
+                </tr>
+                <tr th:if="${order.discount.compareTo(T(java.math.BigDecimal).ZERO) > 0}">
+                    <th colspan="2" class="text-end">
+                        Promo <span class="badge text-bg-success" th:text="${order.promoCode}">WELCOME10</span>
+                    </th>
+                    <th class="text-end" th:text="|- ₹ ${order.discount}|">- ₹ 0.00</th>
+                </tr>
+                <tr>
+                    <th colspan="2" class="text-end">Total</th>
+                    <th class="text-end" th:text="|₹ ${order.total}|">₹ 0.00</th>
+                </tr>
+                </tfoot>
+            </table>
+
+            <div class="alert alert-danger" th:if="${order.cancelReason != null}">
+                Cancelled: <span th:text="${order.cancelReason}">reason</span>
+            </div>
+
+            <div class="d-flex gap-2 flex-wrap">
+                <a th:href="@{/orders}" class="btn btn-link">Back to my orders</a>
+                <a th:href="@{/orders/{id}/invoice(id=${order.id})}" class="btn btn-outline-secondary ms-auto"
+                   target="_blank">Print invoice</a>
+                <form th:if="${order.status.name() == 'PLACED'}" th:action="@{/orders/{id}/cancel(id=${order.id})}"
+                      method="post">
+                    <button type="submit" class="btn btn-outline-danger">Cancel order</button>
+                </form>
+                <form th:if="${order.status.name() != 'CANCELLED'}" th:action="@{/orders/{id}/reorder(id=${order.id})}"
+                      method="post">
+                    <button type="submit" class="btn btn-primary">Order again</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card card-body">
+                <h2 class="h6">Delivery address</h2>
+                <p class="small mb-3" th:text="${order.shippingAddress}">Address</p>
+
+                <h2 class="h6">Status history</h2>
+                <ul class="timeline small">
+                    <li th:classappend="${order.status.ordinal() >= 0} ? 'done'">
+                        <strong>Order placed</strong>
+                        <div class="text-muted" th:text="${#temporals.format(order.placedAt, 'dd MMM yyyy, HH:mm')}">date</div>
+                    </li>
+                    <li th:if="${order.status.name() != 'CANCELLED'}"
+                        th:classappend="${order.status.ordinal() >= 1} ? 'done'">
+                        <strong>Shipped</strong>
+                    </li>
+                    <li th:if="${order.status.name() == 'DELIVERED'}" class="done">
+                        <strong>Delivered</strong>
+                    </li>
+                    <li th:if="${order.status.name() == 'CANCELLED'}" class="done">
+                        <strong>Cancelled</strong>
+                        <div class="text-muted" th:if="${order.cancelReason != null}" th:text="${order.cancelReason}">reason</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
 </main>
 
 <footer th:replace="~{fragments :: footer}"></footer>

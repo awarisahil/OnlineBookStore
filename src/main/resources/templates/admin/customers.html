@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Customers')}"></head>
+<body>
+<nav th:replace="~{fragments :: site-nav}"></nav>
+
+<main class="container">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <h1 class="mb-0">Customers</h1>
+        <a th:href="@{/admin/export/customers.csv}" class="btn btn-outline-secondary btn-sm">Export CSV</a>
+    </div>
+
+    <table class="table table-striped align-middle" th:unless="${#lists.isEmpty(customers)}">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="customer : ${customers}">
+            <td th:text="${customer.fullName}">Reader</td>
+            <td th:text="${customer.email}">reader@example.com</td>
+            <td th:text="${customer.phone}">123456</td>
+            <td><span class="badge"
+                      th:classappend="${customer.role.name() == 'SELLER'} ? 'text-bg-dark' : 'text-bg-light'"
+                      th:text="${customer.role}">CUSTOMER</span></td>
+            <td><span class="badge" th:classappend="${customer.enabled} ? 'text-bg-success' : 'text-bg-danger'"
+                      th:text="${customer.enabled} ? 'Active' : 'Disabled'">Active</span></td>
+            <td class="text-end">
+                <a class="btn btn-outline-primary btn-sm" th:href="@{/admin/customers/{e}(e=${customer.email})}">View</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+</body>
+</html>

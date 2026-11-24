@@ -1,29 +1,61 @@
 # OnlineBookStore
 
-A modern online bookstore web application. Customers browse the catalog, manage a
-shopping cart, and place orders; sellers manage the catalog from an admin area.
+A modern online bookstore web application. Customers browse the catalog, read and
+write reviews, manage a wishlist, apply promo codes, and track their orders; sellers
+run the store from a full admin area with a dashboard, order management, and marketing tools.
 
 ## Stack
 
 - Java 17, Spring Boot 3 (Spring MVC, Spring Security, Spring Data JPA, Bean Validation)
 - Thymeleaf server-rendered UI (Bootstrap 5 via WebJars)
-- PostgreSQL 16 (Flyway-managed schema and seed data)
+- PostgreSQL 16 (Flyway-managed schema and seed data); embedded H2 for dev
 - Maven
 
 ## Features
 
 **Customers**
-- Register (email + password, terms acceptance enforced) and log in
-- Browse the book catalog with live stock badges (Out of Stock / Only N left / Trending)
-- Search books by title or author
+- Register (email + password, terms acceptance enforced) and log in, with optional
+  remember-me for a week
+- Browse the catalog with live stock badges (Out of Stock / Only N left / Trending)
+- Search books by title or author, with live autocomplete suggestions
+- Filter by category, in-stock only; sort by title, author, price, or newest; paginated results
+- Public book detail pages with description, metadata, ratings, and reviews
+- Star reviews (one per customer per book — re-submitting updates your review)
+- Wishlist: save books, move them to the cart later
+- "Notify me when available" sign-ups for sold-out books (restock emails are simulated)
+- Recently-viewed shelf, "Readers also picked" recommendations per book
+- Trending (bestsellers) and New Arrivals shelves, featured picks on the home page
 - Session-based shopping cart with per-book quantity controls, capped by available stock
-- Checkout with order summary and a simulated payment (no card data is collected)
-- Receipt page after each order, with a personal order history
+- Promo codes at checkout (percent off, minimum order, usage limits, expiry —
+  try `WELCOME10` for 10% off)
+- Simulated checkout with address snapshot and instant receipt
+- Order lifecycle with status timeline: Placed → Shipped → Delivered (or Cancelled);
+  customers can cancel while the order is still placed — stock is returned automatically
+- Reorder a past order in one click (respects current stock)
+- Printable invoice for every order
+- Profile page: edit contact/delivery details and change password
+- Contact form + FAQ page; dark mode toggle everywhere
 
 **Sellers (admin)**
-- Inventory overview with stock badges
-- Add books (server-generated UUID barcode), edit name/author/price/quantity, remove books
-- Sales history: every order with customer, items, and totals
+- Dashboard: revenue, order count, copies sold, customer count, bestseller chart,
+  recent orders, low-stock alerts with one-click +10 restock (triggers notify-me emails)
+- Order management: filter by status, mark shipped/delivered, cancel with a reason
+- Customer management: list, inspect order history, promote to seller, disable accounts
+- Catalog management: add/edit/remove books with category, description, year, pages,
+  featured flag; quick restock; book detail pages stay consistent
+- Category management CRUD
+- Review moderation: hide, unhide, or delete reviews
+- Promo code management: create, activate/deactivate, delete
+- Contact message inbox with read/unread tracking
+- Audit log of the last 100 admin actions
+- CSV export of orders, books, and customers
+- Restock notifications queue for "notify me" sign-ups
+
+**Platform**
+- Read-only JSON API (`/api/books`, `/api/books/{barcode}`, `/api/books/{barcode}/reviews`,
+  `/api/categories`) powering the autocomplete and available for integrations
+- Transactional, atomic stock purchasing (no overselling); full rollback on failure
+- Real error pages with proper HTTP statuses
 
 ## Screenshots
 
@@ -39,6 +71,8 @@ shopping cart, and place orders; sellers manage the catalog from an admin area.
 
 ![Book catalog with live stock badges](docs/screenshots/catalog.png)
 
+![Book detail with reviews](docs/screenshots/book-detail.png)
+
 ![Shopping cart](docs/screenshots/cart.png)
 
 ![Checkout](docs/screenshots/checkout.png)
@@ -47,11 +81,13 @@ shopping cart, and place orders; sellers manage the catalog from an admin area.
 
 ![Order history](docs/screenshots/orders.png)
 
+![Wishlist](docs/screenshots/wishlist.png)
+
 ### Seller (admin)
 
-![Book inventory](docs/screenshots/admin-inventory.png)
+![Dashboard](docs/screenshots/admin-dashboard.png)
 
-![Add book](docs/screenshots/admin-add-book.png)
+![Book inventory](docs/screenshots/admin-inventory.png)
 
 ![Sales history](docs/screenshots/admin-sales.png)
 
@@ -72,7 +108,7 @@ mvn spring-boot:run
 mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
-Then open hxxxx
+Then open http://localhost:8080
 
 ### Demo accounts (seeded on first start)
 
@@ -96,7 +132,7 @@ Environment variables override the database connection:
 ```
 src/main/java/com/onlinebookstore/
   config/        security, demo data seeding
-  controller/    web controllers (customer, admin, errors)
+  controller/    web controllers (customer, admin, JSON API, errors)
   dto/           form and receipt objects
   exception/     domain exceptions
   model/         JPA entities and session cart

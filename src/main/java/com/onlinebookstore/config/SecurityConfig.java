@@ -2,8 +2,10 @@ package com.onlinebookstore.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,10 +23,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/about", "/login", "/register", "/error/**", "/css/**", "/webjars/**")
+                        .requestMatchers("/", "/about", "/faq", "/contact", "/login", "/register",
+                                "/error/**", "/css/**", "/webjars/**")
                         .permitAll()
+                        .requestMatchers("/books/*").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("SELLER")
-                        .requestMatchers("/books", "/cart/**", "/checkout", "/pay", "/receipt", "/orders/**")
+                        .requestMatchers("/books", "/trending", "/new-arrivals", "/cart/**", "/checkout",
+                                "/pay", "/receipt", "/orders/**", "/wishlist/**", "/reviews/**",
+                                "/notify/**", "/profile/**")
                         .hasRole("CUSTOMER")
                         .anyRequest().authenticated())
                 .formLogin(form -> form
@@ -33,6 +40,10 @@ public class SecurityConfig {
                         .successHandler(new RoleBasedAuthenticationSuccessHandler())
                         .failureUrl("/login?error")
                         .permitAll())
+                .rememberMe(remember -> remember
+                        .key("onlinebookstore-remember-me")
+                        .tokenValiditySeconds(7 * 24 * 60 * 60)
+                        .alwaysRemember(false))
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")
@@ -48,10 +59,11 @@ public class SecurityConfig {
                 .orElseThrow(() -> new UsernameNotFoundException("No account for " + email));
     }
 
-    private static org.springframework.security.core.userdetails.UserDetails toUserDetails(User user) {
+    private static UserDetails toUserDetails(User user) {
         return org.springframework.security.core.userdetails.User.withUsername(user.getEmail())
                 .password(user.getPasswordHash())
                 .roles(user.getRole().name())
+                .disabled(!user.isEnabled())
                 .build();
     }
 

@@ -7,6 +7,8 @@
 <main class="container">
     <h1 class="mb-4">My Orders</h1>
 
+    <div th:replace="~{fragments :: alerts}"></div>
+
     <div th:if="${#lists.isEmpty(orders)}" class="alert alert-info">
         No orders yet. <a th:href="@{/books}">Browse the catalog</a>.
     </div>
@@ -16,6 +18,7 @@
         <tr>
             <th>Order #</th>
             <th>Placed</th>
+            <th>Status</th>
             <th class="text-end">Total</th>
             <th></th>
         </tr>
@@ -24,9 +27,18 @@
         <tr th:each="order : ${orders}">
             <td th:text="${order.id}">1</td>
             <td th:text="${#temporals.format(order.placedAt, 'dd MMM yyyy, HH:mm')}">date</td>
+            <td><span th:replace="~{fragments :: order-status-badge(${order.status})}"></span></td>
             <td class="text-end" th:text="|₹ ${order.total}|">₹ 0.00</td>
             <td class="text-end">
                 <a class="btn btn-outline-primary btn-sm" th:href="@{/orders/{id}(id=${order.id})}">View</a>
+                <form th:if="${order.status.name() == 'PLACED'}" class="d-inline"
+                      th:action="@{/orders/{id}/cancel(id=${order.id})}" method="post">
+                    <button type="submit" class="btn btn-outline-danger btn-sm">Cancel</button>
+                </form>
+                <form th:if="${order.status.name() != 'CANCELLED'}" class="d-inline"
+                      th:action="@{/orders/{id}/reorder(id=${order.id})}" method="post">
+                    <button type="submit" class="btn btn-outline-secondary btn-sm">Reorder</button>
+                </form>
             </td>
         </tr>
         </tbody>

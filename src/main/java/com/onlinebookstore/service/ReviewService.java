@@ -33,13 +33,13 @@ public class ReviewService {
 
     @Transactional(readOnly = true)
     public List<Review> visibleForBook(String bookId) {
-        return reviewRepository.findByBookIdAndHiddenFalseOrderByCreatedAtDesc(bookId);
+        return reviewRepository.findByBookBarcodeAndHiddenFalseOrderByCreatedAtDesc(bookId);
     }
 
     @Transactional(readOnly = true)
     public BookRating ratingFor(String bookId) {
         Double avg = reviewRepository.averageRatingFor(bookId);
-        long count = reviewRepository.countByBookIdAndHiddenFalse(bookId);
+        long count = reviewRepository.countByBookBarcodeAndHiddenFalse(bookId);
         if (avg == null) {
             return BookRating.NONE;
         }
@@ -53,7 +53,7 @@ public class ReviewService {
         if (rating < 1 || rating > 5) {
             throw new IllegalArgumentException("Rating must be between 1 and 5");
         }
-        return reviewRepository.findByBookIdAndCustomerEmail(bookId, customerEmail)
+        return reviewRepository.findByBookBarcodeAndCustomerEmail(bookId, customerEmail)
                 .map(existing -> {
                     existing.setRating(rating);
                     existing.setText(text);
