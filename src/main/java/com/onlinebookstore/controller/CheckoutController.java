@@ -14,16 +14,19 @@ import com.onlinebookstore.dto.Receipt;
 import com.onlinebookstore.model.Cart;
 import com.onlinebookstore.service.CartService;
 import com.onlinebookstore.service.OrderService;
+import com.onlinebookstore.service.PromoService;
 
 @Controller
 public class CheckoutController {
 
     private final CartService cartService;
     private final OrderService orderService;
+    private final PromoService promoService;
 
-    public CheckoutController(CartService cartService, OrderService orderService) {
+    public CheckoutController(CartService cartService, OrderService orderService, PromoService promoService) {
         this.cartService = cartService;
         this.orderService = orderService;
+        this.promoService = promoService;
     }
 
     @GetMapping("/checkout")
@@ -33,7 +36,15 @@ public class CheckoutController {
             return "redirect:/cart";
         }
         model.addAttribute("lines", view.lines());
-        model.addAttribute("total", view.total());
+        model.addAttribute("subtotal", view.total());
+
+        String promoCode = CartController.promoCode(session);
+        PromoService.PromoResult promo = promoService.validate(promoCode, view.total());
+        if (promo.applied() && promo.promo() != null) {
+            model.addAttribute("promo", promo.promo());
+            model.addAttribute("discount", promo.discount());
+        }
+        model.addAttribute("total", view.total().subtract(promo.applied() ? promo.discount() : java.math.BigDecimal.ZERO));
         return "checkout";
     }
 
@@ -45,9 +56,11 @@ public class CheckoutController {
             return "redirect:/cart";
         }
 
-        Receipt receipt = orderService.placeOrder(authentication.getName(), view.lines());
+        String promoCode = CartController.promoCode(session);
+        Receipt receipt = orderService.placeOrder(authentication.getName(), view.lines(), promoCode);
 
         cart.clear();
+        session.removeAttribute(CartController.PROMO_SESSION_KEY);
         redirectAttributes.addFlashAttribute("receipt", receipt);
         return "redirect:/receipt";
     }

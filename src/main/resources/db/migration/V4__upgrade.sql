@@ -121,4 +121,6 @@ ALTER TABLE orders ADD COLUMN discount         NUMERIC(10,2) NOT NULL DEFAULT 0;
 ALTER TABLE orders ADD COLUMN cancel_reason    VARCHAR(500);
 ALTER TABLE orders ADD COLUMN shipping_address VARCHAR(500);
 
+ALTER TABLE users ADD COLUMN enabled BOOLEAN NOT NULL DEFAULT TRUE;
+
 INSERT INTO promo_codes (code, percent_off, min_order, max_uses) VALUES ('WELCOME10', 10, 0, NULL);

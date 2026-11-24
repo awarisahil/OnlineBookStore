@@ -10,6 +10,9 @@ public class Receipt implements Serializable {
 
     private Long orderId;
     private List<ReceiptLine> lines;
+    private BigDecimal subtotal;
+    private BigDecimal discount;
+    private String promoCode;
     private BigDecimal total;
     private LocalDateTime placedAt;
 
@@ -34,6 +37,30 @@ public class Receipt implements Serializable {
 
     public void setLines(List<ReceiptLine> lines) {
         this.lines = lines;
+    }
+
+    public BigDecimal getSubtotal() {
+        return subtotal;
+    }
+
+    public void setSubtotal(BigDecimal subtotal) {
+        this.subtotal = subtotal;
+    }
+
+    public BigDecimal getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(BigDecimal discount) {
+        this.discount = discount;
+    }
+
+    public String getPromoCode() {
+        return promoCode;
+    }
+
+    public void setPromoCode(String promoCode) {
+        this.promoCode = promoCode;
     }
 
     public BigDecimal getTotal() {
