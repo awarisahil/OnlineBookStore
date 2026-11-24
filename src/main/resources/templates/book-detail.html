@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: head(${book.name})}"></head>
+<body>
+<nav th:replace="~{fragments :: site-nav}"></nav>
+
+<main class="container">
+    <div th:replace="~{fragments :: alerts}"></div>
+
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/books}">Browse</a></li>
+            <li class="breadcrumb-item" th:if="${book.category != null}">
+                <a th:href="@{/books(category=${book.category.id})}" th:text="${book.category.name}">Category</a>
+            </li>
+            <li class="breadcrumb-item active" th:text="${book.name}">Book</li>
+        </ol>
+    </nav>
+
+    <div class="row g-5">
+        <div class="col-md-4">
+            <div th:replace="~{fragments :: cover(${book}, 'cover-large')}"></div>
+        </div>
+        <div class="col-md-8">
+            <h1 class="page-heading" th:text="${book.name}">Book name</h1>
+            <p class="lead mb-2" th:text="${book.author}">Author</p>
+            <p class="d-flex gap-2 align-items-center flex-wrap mb-3">
+                <span th:replace="~{fragments :: stock-badge(${book.quantity})}"></span>
+                <span th:if="${rating.count() > 0}">
+                    <span th:replace="~{fragments :: stars(${rating.average()})}"></span>
+                    <span class="text-muted" th:text="|${rating.average()} (${rating.count()} reviews)|">4.5 (3 reviews)</span>
+                </span>
+                <span th:if="${rating.count() == 0}" class="text-muted">No reviews yet</span>
+            </p>
+            <p class="fs-3" th:text="|₹ ${book.price}|">₹ 0.00</p>
+
+            <p th:if="${book.description != null}" th:text="${book.description}" class="mb-3">Description</p>
+
+            <dl class="row small text-muted mb-4" th:if="${book.category != null or book.publishedYear != null or book.pages != null}">
+                <dt class="col-sm-3" th:if="${book.category != null}">Category</dt>
+                <dd class="col-sm-9" th:if="${book.category != null}">
+                    <a th:href="@{/books(category=${book.category.id})}" th:text="${book.category.name}">Category</a>
+                </dd>
+                <dt class="col-sm-3" th:if="${book.publishedYear != null}">Published</dt>
+                <dd class="col-sm-9" th:if="${book.publishedYear != null}" th:text="${book.publishedYear}">2020</dd>
+                <dt class="col-sm-3" th:if="${book.pages != null}">Pages</dt>
+                <dd class="col-sm-9" th:if="${book.pages != null}" th:text="${book.pages}">300</dd>
+            </dl>
+
+            <div class="d-flex gap-2 flex-wrap">
+                <form th:if="${book.quantity > 0}" th:action="@{/cart/add/{b}(b=${book.barcode})}" method="post">
+                    <button type="submit" class="btn btn-primary">Add to cart</button>
+                </form>
+                <th:block sec:authorize="isAuthenticated() and !hasRole('SELLER')">
+                    <form th:action="@{/wishlist/toggle/{b}(b=${book.barcode})}" method="post">
+                        <button type="submit" class="btn"
+                                th:classappend="${onWishlist} ? 'btn-danger' : 'btn-outline-danger'"
+                                th:text="${onWishlist} ? '♥ On wishlist' : '♡ Add to wishlist'">♡ Add to wishlist</button>
+                    </form>
+                    <form th:if="${book.quantity == 0}" th:action="@{/notify/{b}(b=${book.barcode})}" method="post">
+                        <button type="submit" class="btn btn-outline-secondary">Notify me when available</button>
+                    </form>
+                </th:block>
+                <a sec:authorize="!isAuthenticated()" th:href="@{/login}" class="btn btn-outline-primary">Log in to shop</a>
+            </div>
+        </div>
+    </div>
+
+    <section class="mt-5">
+        <h2 class="h4 page-heading mb-3">Reviews</h2>
+
+        <th:block sec:authorize="isAuthenticated() and !hasRole('SELLER')">
+            <form th:action="@{/reviews}" method="post" class="card card-body mb-4">
+                <input type="hidden" name="bookId" th:value="${book.barcode}">
+                <div class="mb-2">
+                    <label class="form-label fw-semibold">Your rating</label>
+                    <select name="rating" class="form-select" style="max-width: 160px;">
+                        <option value="5">★★★★★ (5)</option>
+                        <option value="4">★★★★ (4)</option>
+                        <option value="3">★★★ (3)</option>
+                        <option value="2">★★ (2)</option>
+                        <option value="1">★ (1)</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Your review</label>
+                    <textarea name="text" class="form-control" rows="3" maxlength="2000" required
+                              placeholder="What did you think?"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Publish review</button>
+            </form>
+        </th:block>
+
+        <p th:if="${#lists.isEmpty(reviews)}" class="text-muted">No reviews yet — be the first to share your thoughts.</p>
+        <div th:each="review : ${reviews}" class="card review-card mb-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between flex-wrap gap-2">
+                    <strong th:text="${review.customer.firstName + ' ' + review.customer.lastName}">Reader</strong>
+                    <span class="text-muted small"
+                          th:text="${#temporals.format(review.createdAt, 'd MMM yyyy')}">1 Jan 2026</span>
+                </div>
+                <div th:replace="~{fragments :: stars(${review.rating})}"></div>
+                <p class="mb-0 mt-2" th:text="${review.text}">Review text</p>
+            </div>
+        </div>
+    </section>
+
+    <section th:if="${!#lists.isEmpty(related)}" class="mt-5">
+        <h2 class="h4 page-heading mb-3">Readers also picked</h2>
+        <div th:replace="~{fragments :: book-grid(${related})}"></div>
+    </section>
+
+    <section th:if="${recentlyViewed != null and !#lists.isEmpty(recentlyViewed)}" class="mt-5">
+        <h2 class="h4 page-heading mb-3">Recently viewed</h2>
+        <div class="row g-4">
+            <div class="col-6 col-md-2" th:each="item : ${recentlyViewed}">
+                <a th:href="@{/books/{b}(b=${item.book.barcode})}" class="text-decoration-none">
+                    <div th:replace="~{fragments :: cover(${item.book}, '')}"></div>
+                    <p class="small mt-2 mb-0 text-muted book-link" th:text="${item.book.name}">Book</p>
+                </a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+</body>
+</html>

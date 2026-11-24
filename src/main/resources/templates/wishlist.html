@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Wishlist')}"></head>
+<body>
+<nav th:replace="~{fragments :: site-nav}"></nav>
+
+<main class="container">
+    <h1 class="page-heading mb-4">Your wishlist</h1>
+    <div th:replace="~{fragments :: alerts}"></div>
+
+    <p th:if="${#lists.isEmpty(items)}" class="text-muted">
+        Your wishlist is empty — tap the ♡ on any book to save it here.
+    </p>
+
+    <div class="row g-4">
+        <div class="col-md-6 col-lg-4" th:each="item : ${items}">
+            <div class="card book-card h-100">
+                <div class="row g-0">
+                    <div class="col-4 p-3">
+                        <a th:href="@{/books/{b}(b=${item.book.barcode})}" class="text-decoration-none">
+                            <div th:replace="~{fragments :: cover(${item.book}, '')}"></div>
+                        </a>
+                    </div>
+                    <div class="col-8">
+                        <div class="card-body">
+                            <a class="h6 book-link text-decoration-none" th:href="@{/books/{b}(b=${item.book.barcode})}"
+                               th:text="${item.book.name}">Book</a>
+                            <p class="small text-muted mb-2" th:text="${item.book.author}">Author</p>
+                            <p class="mb-2"><span th:replace="~{fragments :: stock-badge(${item.book.quantity})}"></span></p>
+                            <strong class="d-block mb-2" th:text="|₹ ${item.book.price}|">₹ 0.00</strong>
+                            <div class="d-flex gap-2">
+                                <form th:if="${item.book.quantity > 0}"
+                                      th:action="@{/cart/add/{b}(b=${item.book.barcode})}" method="post">
+                                    <button type="submit" class="btn btn-primary btn-sm">Add to cart</button>
+                                </form>
+                                <form th:action="@{/wishlist/remove/{b}(b=${item.book.barcode})}" method="post">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">Remove</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head(${heading})}"></head>
+<body>
+<nav th:replace="~{fragments :: site-nav}"></nav>
+
+<main class="container">
+    <div class="mb-4">
+        <h1 class="page-heading mb-1" th:text="${heading}">Trending</h1>
+        <p class="text-muted mb-0" th:text="${subheading}">Top books</p>
+    </div>
+
+    <p th:if="${#lists.isEmpty(books)}" class="text-muted">Nothing here yet — check back soon.</p>
+    <div th:replace="~{fragments :: book-grid(${books})}"></div>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+</body>
+</html>

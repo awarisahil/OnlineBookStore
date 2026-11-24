@@ -236,3 +236,241 @@ main {
     max-width: 480px;
     margin: 0 auto;
 }
+
+/* ---------- feature upgrade: stars, badges, dark mode, dashboard ---------- */
+
+.text-bg-gold {
+    background: var(--gold-bright);
+    color: #241f14;
+}
+
+.book-link {
+    color: inherit;
+}
+
+.book-link:hover {
+    color: var(--pine-mid);
+}
+
+.star-rating .star {
+    color: #c9c1b2;
+}
+
+.star-rating .star-on {
+    color: var(--gold);
+}
+
+.theme-toggle {
+    border: 0;
+    font-size: 1.05rem;
+    padding: 0.25rem 0.5rem;
+    text-decoration: none;
+}
+
+.footer-link {
+    color: #cfc8b6;
+    text-decoration: none;
+}
+
+.footer-link:hover {
+    color: #ffffff;
+}
+
+.review-card {
+    border-left: 3px solid var(--gold);
+}
+
+.filter-chip {
+    border-radius: 999px;
+}
+
+.timeline {
+    list-style: none;
+    padding-left: 0;
+}
+
+.timeline li {
+    position: relative;
+    padding-left: 1.6rem;
+    padding-bottom: 1rem;
+}
+
+.timeline li::before {
+    content: '';
+    position: absolute;
+    left: 0.42rem;
+    top: 0.3rem;
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    background: var(--paper-dark);
+}
+
+.timeline li::after {
+    content: '';
+    position: absolute;
+    left: 0.68rem;
+    top: 1rem;
+    bottom: 0;
+    width: 2px;
+    background: var(--paper-dark);
+}
+
+.timeline li:last-child::after {
+    display: none;
+}
+
+.timeline li.done::before {
+    background: var(--pine-mid);
+}
+
+.timeline li.done strong {
+    color: var(--pine-mid);
+}
+
+.stat-card {
+    background: var(--card-bg);
+    border: 1px solid var(--paper-dark);
+    border-radius: 0.75rem;
+    padding: 1.1rem 1.25rem;
+    height: 100%;
+}
+
+.stat-card .stat-value {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.9rem;
+    font-weight: 700;
+}
+
+.stat-card .stat-label {
+    color: var(--ink-soft);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.bar-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.5rem;
+}
+
+.bar-row .bar-label {
+    flex: 0 0 40%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.9rem;
+}
+
+.bar-row .bar-track {
+    flex: 1;
+    background: var(--paper-dark);
+    border-radius: 999px;
+    height: 0.8rem;
+    overflow: hidden;
+}
+
+.bar-row .bar-fill {
+    background: linear-gradient(90deg, var(--pine-mid), var(--gold));
+    height: 100%;
+    border-radius: 999px;
+}
+
+/* ---------- dark theme ---------- */
+
+:root[data-bs-theme='dark'] {
+    --paper: #171a17;
+    --paper-dark: #232823;
+    --ink: #e8e2d4;
+    --ink-soft: #a9a494;
+    --pine: #16281d;
+    --pine-mid: #2a5038;
+    --pine-dark: #101d15;
+    --card-bg: #1e231e;
+}
+
+:root[data-bs-theme='dark'] .site-nav {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.55);
+}
+
+:root[data-bs-theme='dark'] .table {
+    --bs-table-color: var(--ink);
+    --bs-table-bg: transparent;
+    --bs-table-border-color: var(--paper-dark);
+    --bs-table-striped-bg: rgba(255, 255, 255, 0.03);
+}
+
+:root[data-bs-theme='dark'] .card,
+:root[data-bs-theme='dark'] .form-control,
+:root[data-bs-theme='dark'] .form-select,
+:root[data-bs-theme='dark'] .form-check-input,
+:root[data-bs-theme='dark'] .list-group-item {
+    background-color: var(--card-bg);
+    border-color: var(--paper-dark);
+    color: var(--ink);
+}
+
+:root[data-bs-theme='dark'] .form-control::placeholder {
+    color: var(--ink-soft);
+}
+
+:root[data-bs-theme='dark'] .dropdown-menu {
+    background: var(--card-bg);
+    border-color: var(--paper-dark);
+}
+
+:root[data-bs-theme='dark'] .text-muted {
+    color: var(--ink-soft) !important;
+}
+
+:root[data-bs-theme='dark'] .book-link:hover {
+    color: var(--gold-bright);
+}
+
+:root[data-bs-theme='dark'] .alert-success {
+    background-color: #1d3a28;
+    color: #bfe3cd;
+    border-color: #2a5038;
+}
+
+:root[data-bs-theme='dark'] .alert-danger {
+    background-color: #432028;
+    color: #f1c1c6;
+    border-color: #6b2737;
+}
+
+:root[data-bs-theme='dark'] .alert-info,
+:root[data-bs-theme='dark'] .alert-warning {
+    background-color: #3d3423;
+    color: #efe2b8;
+    border-color: #6d5f36;
+}
+
+/* ---------- print: order invoice ---------- */
+
+@media print {
+    .site-nav,
+    .site-footer,
+    .no-print {
+        display: none !important;
+    }
+
+    body {
+        background: #ffffff;
+        color: #000000;
+    }
+
+    main {
+        padding: 0;
+    }
+}
+
+.book-cover.cover-large {
+    max-width: 340px;
+}
+
+a .book-cover {
+    display: block;
+}

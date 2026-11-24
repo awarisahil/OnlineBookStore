@@ -5,50 +5,95 @@
 <nav th:replace="~{fragments :: site-nav}"></nav>
 
 <main class="container">
-    <div class="d-flex flex-wrap justify-content-between align-items-end mb-4 gap-3">
+    <div class="d-flex flex-wrap justify-content-between align-items-end mb-3 gap-3">
         <div>
             <h1 class="page-heading mb-1">Browse the shelves</h1>
-            <p class="text-muted mb-0" th:text="|${#lists.size(books)} books available|">15 books available</p>
+            <p class="text-muted mb-0" th:text="|${result.books().totalElements} books available|">15 books available</p>
         </div>
-        <form th:action="@{/books}" method="get" class="d-flex" role="search" style="min-width: 280px;">
-            <input type="search" name="q" class="form-control me-2" placeholder="Search title or author"
-                   th:value="${q}">
+        <form th:action="@{/books}" method="get" class="d-flex" role="search" style="min-width: 300px;">
+            <input type="hidden" name="category" th:if="${categoryId != null}" th:value="${categoryId}">
+            <input type="hidden" name="stock" th:if="${stock}" value="in">
+            <input type="hidden" name="sort" th:value="${sort}">
+            <input type="search" name="q" id="searchBox" list="book-suggestions" class="form-control me-2"
+                   placeholder="Search title or author" th:value="${q}">
+            <datalist id="book-suggestions"></datalist>
             <button type="submit" class="btn btn-outline-primary">Search</button>
             <a th:if="${q != null and !#strings.isEmpty(q)}" class="btn btn-link" th:href="@{/books}">Clear</a>
         </form>
     </div>
 
+    <form th:action="@{/books}" method="get" class="d-flex flex-wrap align-items-center gap-3 mb-4">
+        <input type="hidden" name="q" th:value="${q}">
+        <div class="btn-group btn-group-sm flex-wrap">
+            <a class="btn filter-chip" th:classappend="${categoryId == null} ? 'btn-primary' : 'btn-outline-primary'"
+               th:href="@{/books(q=${q}, sort=${sort}, stock=${stock ? 'in' : null})}">All</a>
+            <a th:each="cat : ${result.categories()}" class="btn filter-chip"
+               th:classappend="${categoryId == cat.id} ? 'btn-primary' : 'btn-outline-primary'"
+               th:href="@{/books(q=${q}, category=${cat.id}, sort=${sort}, stock=${stock ? 'in' : null})}"
+               th:text="${cat.name}">Category</a>
+        </div>
+        <div class="d-flex gap-3 align-items-center ms-auto">
+            <div class="form-check form-switch mb-0">
+                <input class="form-check-input" type="checkbox" name="stock" value="in" id="inStockOnly"
+                       th:checked="${stock}" onchange="this.form.submit()">
+                <label class="form-check-label" for="inStockOnly">In stock only</label>
+            </div>
+            <select class="form-select form-select-sm" style="width: auto;" name="sort" onchange="this.form.submit()">
+                <option value="title" th:selected="${sort == 'title'}">Title A–Z</option>
+                <option value="price-asc" th:selected="${sort == 'price-asc'}">Price: low to high</option>
+                <option value="price-desc" th:selected="${sort == 'price-desc'}">Price: high to low</option>
+                <option value="author" th:selected="${sort == 'author'}">Author A–Z</option>
+                <option value="newest" th:selected="${sort == 'newest'}">Newest</option>
+            </select>
+        </div>
+    </form>
+
     <div th:replace="~{fragments :: alerts}"></div>
 
     <p th:if="${#lists.isEmpty(books)}" class="text-muted">No books match your search — try another term.</p>
 
-    <div class="row g-4">
-        <div class="col-6 col-md-4 col-lg-3" th:each="book : ${books}">
-            <div class="card book-card h-100">
-                <div class="p-3 pb-0">
-                    <div th:replace="~{fragments :: cover(${book}, '')}"></div>
-                </div>
-                <div class="card-body d-flex flex-column pt-3">
-                    <h2 class="card-title h6" th:text="${book.name}">Book name</h2>
-                    <p class="card-subtitle small text-muted mb-2" th:text="${book.author}">Author</p>
-                    <p class="mb-2">
-                        <span th:replace="~{fragments :: stock-badge(${book.quantity})}"></span>
-                    </p>
-                    <div class="mt-auto d-flex justify-content-between align-items-center">
-                        <strong class="fs-5" th:text="|₹ ${book.price}|">₹ 0.00</strong>
-                        <form th:if="${book.quantity > 0}" th:action="@{/cart/add/{b}(b=${book.barcode})}" method="post">
-                            <button type="submit" class="btn btn-primary btn-sm">Add to cart</button>
-                        </form>
-                        <button th:unless="${book.quantity > 0}" type="button" class="btn btn-secondary btn-sm" disabled>
-                            Sold out
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div th:replace="~{fragments :: book-grid(${books})}"></div>
+
+    <nav th:if="${result.books().totalPages > 1}" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${result.books().first} ? 'disabled'">
+                <a class="page-link" th:href="@{/books(q=${q}, category=${categoryId}, sort=${sort}, stock=${stock ? 'in' : null}, page=${result.books().number - 1})}">Previous</a>
+            </li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, result.books().totalPages - 1)}"
+                th:classappend="${i == result.books().number} ? 'active'">
+                <a class="page-link" th:href="@{/books(q=${q}, category=${categoryId}, sort=${sort}, stock=${stock ? 'in' : null}, page=${i})}"
+                   th:text="${i + 1}">1</a>
+            </li>
+            <li class="page-item" th:classappend="${result.books().last} ? 'disabled'">
+                <a class="page-link" th:href="@{/books(q=${q}, category=${categoryId}, sort=${sort}, stock=${stock ? 'in' : null}, page=${result.books().number + 1})}">Next</a>
+            </li>
+        </ul>
+    </nav>
 </main>
 
 <footer th:replace="~{fragments :: footer}"></footer>
+
+<script>
+    const box = document.getElementById('searchBox');
+    const list = document.getElementById('book-suggestions');
+    let timer;
+    box.addEventListener('input', () => {
+        clearTimeout(timer);
+        const q = box.value.trim();
+        if (q.length < 2) return;
+        timer = setTimeout(async () => {
+            try {
+                const res = await fetch('/api/books?q=' + encodeURIComponent(q));
+                const books = await res.json();
+                list.innerHTML = '';
+                books.forEach(b => {
+                    const opt = document.createElement('option');
+                    opt.value = b.name;
+                    list.appendChild(opt);
+                });
+            } catch (e) { /* offline or error: autocomplete just stays empty */ }
+        }, 200);
+    });
+</script>
 </body>
 </html>
